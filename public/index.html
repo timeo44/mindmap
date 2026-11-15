@@ -177,6 +177,50 @@ kbd{font:600 10.5px/1 var(--font);padding:3px 5px;border-radius:5px;border:1px s
 .dfoot{font-size:12px;color:var(--muted);border-top:1px solid var(--line);padding-top:11px;line-height:1.5;display:flex;flex-direction:column;gap:4px}
 .dfoot .row{display:flex;gap:14px;flex-wrap:wrap}
 #mapsBtn{flex:none}
+.status[data-state="busy"]::before{background:#d08a1c}
+.status[data-state="warn"]::before{background:var(--danger)}
+.avatar{width:36px;height:36px;border-radius:50%;border:0;cursor:pointer;background:color-mix(in oklab,var(--accent) 16%,var(--surface));color:var(--accent);font-weight:700;font-size:12.5px;letter-spacing:.02em;display:grid;place-items:center;text-transform:uppercase}
+.avatar:hover{background:color-mix(in oklab,var(--accent) 24%,var(--surface))}
+.menu .who{padding:8px 11px 10px;display:flex;flex-direction:column;gap:2px}
+.menu .who b{font-size:14px}
+.menu .who span{font-size:12px;color:var(--muted)}
+.login{position:fixed;inset:0;z-index:90;background:var(--bg);display:grid;place-items:center;overflow:auto;padding-block:24px;
+  padding-left:max(16px,env(safe-area-inset-left,0px));padding-right:max(16px,env(safe-area-inset-right,0px));
+  background-image:radial-gradient(circle,var(--grid) 1.2px,transparent 1.4px);background-size:24px 24px}
+.lbox{width:min(380px,100%);background:var(--surface);border:1px solid var(--line);border-radius:18px;box-shadow:var(--shadow);padding:28px 26px 24px;display:flex;flex-direction:column;gap:14px}
+.lbox .logo{width:40px;height:40px}
+.lbox h1{margin:0;font-size:22px;font-weight:700}
+.lbox p{margin:0;color:var(--muted);line-height:1.5}
+.lbox .btn{height:44px;font-size:14.5px;margin-top:4px}
+.lnote{font-size:12.5px}
+.field{display:flex;flex-direction:column;gap:6px;font-size:13px;font-weight:600}
+.field input,.uact input{height:42px;border:1px solid var(--line);border-radius:10px;background:var(--bg);color:var(--ink);padding:0 12px;font:inherit;font-size:15px;font-weight:400;outline:none;width:100%;min-width:0}
+.field input:focus,.uact input:focus{border-color:var(--accent);box-shadow:0 0 0 3px color-mix(in oklab,var(--accent) 20%,transparent)}
+.lerr{color:var(--danger);font-size:13px;margin:0;line-height:1.45}
+.mbox.wide{width:min(680px,100%)}
+.mbox h3{font-size:14px;margin:20px 0 10px}
+.mbox .field{margin-bottom:12px}
+.ulist{display:flex;flex-direction:column;border:1px solid var(--line);border-radius:12px;overflow:hidden}
+.urow{display:flex;align-items:center;gap:8px 12px;padding:10px 12px;flex-wrap:wrap}
+.urow+.urow{border-top:1px solid var(--line)}
+.uinfo{flex:1;min-width:150px;display:flex;flex-direction:column;gap:2px}
+.uinfo b{font-size:14px;display:flex;align-items:center;gap:7px}
+.uinfo span.n{font-size:12px;color:var(--muted)}
+.tag-admin{font-size:10.5px;font-weight:700;letter-spacing:.03em;color:var(--accent);background:color-mix(in oklab,var(--accent) 13%,var(--surface));padding:2px 6px;border-radius:5px}
+.uact{display:flex;gap:6px;flex-wrap:wrap;align-items:center}
+.uact input{height:32px;font-size:13px;width:170px}
+.btn.sm{height:32px;padding:0 10px;font-size:12.5px;font-weight:550}
+.btn.danger{color:var(--danger)}
+.btn.danger.armed{background:var(--danger);border-color:var(--danger);color:#fff}
+.uform{display:grid;grid-template-columns:1fr 1fr;gap:0 12px}
+.uform .full{grid-column:1/-1}
+.pw{display:flex;gap:6px}.pw input{flex:1}
+.pw .btn{height:42px}
+.chk{display:flex;align-items:center;gap:8px;font-size:13.5px;margin-bottom:6px;cursor:pointer}
+.chk input{width:17px;height:17px;accent-color:var(--accent)}
+.created{background:var(--bg);border:1px solid var(--line);border-radius:12px;padding:12px 14px;margin-top:12px;font-size:13.5px;line-height:1.6}
+.created code{font:600 14px ui-monospace,SFMono-Regular,Menlo,Consolas,monospace;background:var(--surface);border:1px solid var(--line);padding:1px 6px;border-radius:6px;user-select:all}
+@media (max-width:640px){.uform{grid-template-columns:1fr}.uact input{width:100%}}
 #measure{position:absolute;left:-20000px;top:0;width:4000px;height:10px;visibility:hidden;pointer-events:none}
 #nodes{position:absolute;left:0;top:0;width:4000px}
 
@@ -198,13 +242,24 @@ kbd{font:600 10.5px/1 var(--font);padding:3px 5px;border-radius:5px;border:1px s
       <svg class="logo" viewBox="0 0 26 26" aria-hidden="true"><path d="M13 13 L5 6 M13 13 L21 7 M13 13 L20 20 M13 13 L6 20" stroke="var(--accent)" stroke-width="2" stroke-linecap="round" opacity=".55"/><circle cx="13" cy="13" r="4.5" fill="var(--accent)"/><circle cx="5" cy="6" r="2.6" fill="var(--accent)"/><circle cx="21" cy="7" r="2.6" fill="var(--accent)"/><circle cx="20" cy="20" r="2.6" fill="var(--accent)"/><circle cx="6" cy="20" r="2.6" fill="var(--accent)"/></svg>
       <div class="titles">
         <div id="docTitle">Mindmap</div>
-        <div class="status" id="status" title="Jede Änderung wird automatisch unter «Meine Mindmaps» in diesem Browser gespeichert.">Gespeichert</div>
+        <div class="status" id="status" title="Jede Änderung wird automatisch in deinem Konto gespeichert.">Lädt …</div>
       </div>
     </div>
     <div class="tools">
       <button class="ib" id="undoBtn" title="Rückgängig (Ctrl+Z)" aria-label="Rückgängig" disabled><svg viewBox="0 0 24 24"><path d="M9 14 4 9l5-5"/><path d="M4 9h10.5a5.5 5.5 0 0 1 0 11H11"/></svg></button>
       <button class="ib" id="redoBtn" title="Wiederholen (Ctrl+Shift+Z)" aria-label="Wiederholen" disabled><svg viewBox="0 0 24 24"><path d="m15 14 5-5-5-5"/><path d="M20 9H9.5a5.5 5.5 0 0 0 0 11H13"/></svg></button>
       <button class="btn primary" id="saveBtn" title="Speichern (Ctrl+S)"><svg viewBox="0 0 24 24"><path d="M5 4h11l3 3v12a1 1 0 0 1-1 1H6a1 1 0 0 1-1-1V5a1 1 0 0 1 1-1z"/><path d="M8 4v5h7V4M8 20v-6h8v6"/></svg><span class="hide-sm">Speichern</span></button>
+      <div class="menuwrap">
+        <button class="avatar" id="userBtn" aria-label="Konto" aria-haspopup="menu" aria-expanded="false"></button>
+        <div class="menu" id="userMenu" role="menu" hidden>
+          <div class="who"><b id="whoName"></b><span id="whoK"></span></div>
+          <hr>
+          <button role="menuitem" data-act="password"><svg viewBox="0 0 24 24"><rect x="4" y="10" width="16" height="10" rx="2"/><path d="M8 10V7a4 4 0 0 1 8 0v3"/></svg>Passwort ändern</button>
+          <button role="menuitem" data-act="admin" id="adminItem" hidden><svg viewBox="0 0 24 24"><circle cx="9" cy="8" r="3.5"/><path d="M2.5 20a6.5 6.5 0 0 1 13 0"/><path d="M17 11a3 3 0 1 0 0-6M21.5 20a5.5 5.5 0 0 0-4-5.3"/></svg>Benutzer verwalten</button>
+          <hr>
+          <button role="menuitem" data-act="logout"><svg viewBox="0 0 24 24"><path d="M15 4h3a2 2 0 0 1 2 2v12a2 2 0 0 1-2 2h-3"/><path d="m10 16-4-4 4-4M6 12h10"/></svg>Abmelden</button>
+        </div>
+      </div>
       <div class="menuwrap">
         <button class="ib" id="moreBtn" aria-label="Weitere Aktionen" aria-haspopup="menu" aria-expanded="false"><svg viewBox="0 0 24 24"><circle cx="5" cy="12" r="1.2"/><circle cx="12" cy="12" r="1.2"/><circle cx="19" cy="12" r="1.2"/></svg></button>
         <div class="menu" id="menu" role="menu" hidden>
@@ -214,7 +269,6 @@ kbd{font:600 10.5px/1 var(--font);padding:3px 5px;border-radius:5px;border:1px s
           <hr>
           <button role="menuitem" data-act="copy"><svg viewBox="0 0 24 24"><rect x="8" y="8" width="12" height="12" rx="2"/><path d="M16 8V5a1 1 0 0 0-1-1H5a1 1 0 0 0-1 1v10a1 1 0 0 0 1 1h3"/></svg>Als Liste kopieren</button>
           <button role="menuitem" data-act="png"><svg viewBox="0 0 24 24"><rect x="3" y="4" width="18" height="16" rx="2"/><circle cx="9" cy="10" r="2"/><path d="m21 17-5-5-9 8"/></svg>Als Bild speichern (PNG)</button>
-          <button role="menuitem" data-act="html"><svg viewBox="0 0 24 24"><path d="M12 4v11"/><path d="m7 10 5 5 5-5"/><path d="M5 20h14"/></svg>Als HTML-Datei herunterladen</button>
           <hr>
           <button role="menuitem" data-act="expand"><svg viewBox="0 0 24 24"><path d="M4 9V4h5M20 9V4h-5M4 15v5h5M20 15v5h-5"/></svg>Alles ausklappen</button>
           <button role="menuitem" data-act="help"><svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="9"/><path d="M9.5 9.5a2.5 2.5 0 1 1 3.5 2.3c-.6.3-1 .9-1 1.6V14M12 17h.01"/></svg>Tastenkürzel &amp; Hilfe</button>
@@ -247,10 +301,10 @@ kbd{font:600 10.5px/1 var(--font);padding:3px 5px;border-radius:5px;border:1px s
     <aside class="drawer" id="drawer" hidden aria-label="Meine Mindmaps">
       <div class="dhead"><h2>Meine Mindmaps</h2><button class="ib" id="drawerClose" aria-label="Liste schliessen"><svg viewBox="0 0 24 24"><path d="M6 6l12 12M18 6 6 18"/></svg></button></div>
       <button class="btn primary newbtn" id="newMapBtn"><svg viewBox="0 0 24 24"><path d="M12 5v14M5 12h14"/></svg>Neue Mindmap</button>
-      <input id="mapSearch" type="search" placeholder="Mindmaps durchsuchen …" aria-label="Mindmaps durchsuchen" autocomplete="off">
+      <input id="mapSearch" type="search" placeholder="Nach Titel suchen …" aria-label="Mindmaps nach Titel durchsuchen" autocomplete="off">
       <ul class="maplist" id="mapList"></ul>
       <div class="dfoot">
-        <span>Alle Mindmaps werden automatisch in diesem Browser gespeichert. Für ein anderes Gerät eine Sicherung herunterladen und dort laden.</span>
+        <span>Deine Mindmaps werden automatisch in deinem Konto gespeichert und sind auf jedem Gerät verfügbar.</span>
         <div class="row"><button class="link" id="backupExp">Sicherung herunterladen</button><button class="link" id="backupImp">Sicherung laden …</button></div>
         <input type="file" id="backupFile" accept=".json,application/json" hidden>
       </div>
@@ -258,11 +312,21 @@ kbd{font:600 10.5px/1 var(--font);padding:3px 5px;border-radius:5px;border:1px s
     <div class="toast" id="toast" hidden role="status"><span id="toastText"></span><button id="toastBtn" hidden></button></div>
   </main>
 </div>
+<div class="login" id="login" hidden>
+  <form class="lbox" id="loginForm" novalidate>
+    <svg class="logo" viewBox="0 0 26 26" aria-hidden="true"><path d="M13 13 L5 6 M13 13 L21 7 M13 13 L20 20 M13 13 L6 20" stroke="var(--accent)" stroke-width="2" stroke-linecap="round" opacity=".55"/><circle cx="13" cy="13" r="4.5" fill="var(--accent)"/><circle cx="5" cy="6" r="2.6" fill="var(--accent)"/><circle cx="21" cy="7" r="2.6" fill="var(--accent)"/><circle cx="20" cy="20" r="2.6" fill="var(--accent)"/><circle cx="6" cy="20" r="2.6" fill="var(--accent)"/></svg>
+    <h1>Mindmap</h1>
+    <p>Melde dich mit deinem Kürzel an, um deine Mindmaps zu sehen.</p>
+    <label class="field">Kürzel<input id="lk" name="username" autocomplete="username" autocapitalize="none" autocorrect="off" spellcheck="false" maxlength="24" required></label>
+    <label class="field">Passwort<input id="lp" name="password" type="password" autocomplete="current-password" required></label>
+    <p class="lerr" id="lerr" role="alert" hidden></p>
+    <button class="btn primary" id="lbtn" type="submit">Anmelden</button>
+    <p class="lnote">Noch kein Zugang? Dein Administrator legt dir ein Konto an.</p>
+  </form>
+</div>
 <div class="modal" id="modal" hidden><div class="mbox" id="mbox" role="dialog" aria-modal="true"></div></div>
 <div id="measure" aria-hidden="true"></div>
-<script id="mm-state" type="application/json"></script>
 <script>
-const SRC='<!doctype html>\n'+document.documentElement.outerHTML;
 const $=s=>document.querySelector(s);
 const vp=$('#vp'),world=$('#world'),layer=$('#nodes'),svg=$('#links'),measureBox=$('#measure');
 const NS='http://www.w3.org/2000/svg';
@@ -454,42 +518,50 @@ function restore(json){
 function undo(){if(editingId)finishEdit(true);if(!undoS.length)return;redoS.push(snap());restore(undoS.pop());updUndo()}
 function redo(){if(editingId)finishEdit(true);if(!redoS.length)return;undoS.push(snap());restore(redoS.pop());updUndo()}
 
-let embedded=null;
-try{const t=$('#mm-state').textContent.trim();if(t)embedded=JSON.parse(t)}catch{embedded=null}
-const LIB='mindmap:library';
-let lib={maps:{},current:null},currentId=null,pT=0,canStore=true;
-function readLib(){try{const d=JSON.parse(localStorage.getItem(LIB)||'null');if(d&&d.maps&&typeof d.maps==='object')return d}catch{}return {maps:{},current:null}}
-function writeLib(){try{localStorage.setItem(LIB,JSON.stringify(lib));canStore=true;return true}catch{canStore=false;return false}}
+/* ---- Server & Konto ---- */
+const API='/api';
+class ApiError extends Error{constructor(m,status){super(m);this.status=status}}
+let session=null;try{session=JSON.parse(localStorage.getItem('mindmap:session')||'null')}catch{}
+const me=()=>session?.user||null;
+function setSession(x){session=x;try{x?localStorage.setItem('mindmap:session',JSON.stringify(x)):localStorage.removeItem('mindmap:session')}catch{}}
+async function api(path,{method='GET',body}={}){
+  let r;
+  try{r=await fetch(API+path,{method,cache:'no-store',headers:{'content-type':'application/json',...(session?.token?{authorization:'Bearer '+session.token}:{})},body:body===undefined?undefined:JSON.stringify(body)})}
+  catch{throw new ApiError('Keine Verbindung zum Server. Prüfe deine Internetverbindung.',0)}
+  let d=null;try{d=await r.json()}catch{}
+  if(r.status===401&&path!=='/login'){endSession('Deine Anmeldung ist abgelaufen. Bitte melde dich neu an.');throw new ApiError('Nicht angemeldet.',401)}
+  if(!r.ok)throw new ApiError(d?.error||(d?`Fehler ${r.status}`:'Der Server antwortet nicht. Die Seite muss über Netlify laufen.'),r.status);
+  return d;
+}
+
+/* ---- Speichern ---- */
+let mapsMeta=[],currentId=null,dirty=false,saving=null,saveT=0,retryT=0,booted=false;
+const draftKey=()=>'mindmap:draft:'+(me()?.kuerzel||'');
 const timeStr=t=>new Date(t).toLocaleTimeString('de-CH',{hour:'2-digit',minute:'2-digit'});
-function setStatus(t){$('#status').textContent=t}
-function storeNow(){
-  clearTimeout(pT);pT=0;if(!currentId)return false;
-  lib=readLib();
-  const prev=lib.maps[currentId]||{};
-  lib.maps[currentId]={id:currentId,tree,created:prev.created||Date.now(),updated:Date.now(),base:prev.base||null};
-  lib.current=currentId;
-  const ok=writeLib();
-  setStatus(ok?'Gespeichert · '+timeStr(Date.now()):'Nicht gespeichert – Speicher voll oder blockiert');
-  if(!$('#drawer').hidden)renderList();
-  return ok;
-}
-function persist(){setStatus('Speichert …');clearTimeout(pT);pT=setTimeout(storeNow,300)}
-function loadInitial(){
-  lib=readLib();
-  try{const old=JSON.parse(localStorage.getItem('mindmap:neu')||'null');
-    if(old&&old.tree&&!lib.migrated){const id=uid();lib.maps[id]={id,tree:old.tree,created:old.at||Date.now(),updated:old.at||Date.now()};lib.current=id}}catch{}
-  lib.migrated=true;
-  if(embedded?.tree){
-    const id=String(embedded.doc||uid()),e=lib.maps[id];
-    if(!e||e.base!==embedded.savedAt)lib.maps[id]={id,tree:embedded.tree,created:e?.created||Date.now(),updated:Date.now(),base:embedded.savedAt||null};
-    lib.current=id;
+function setStatus(t,state){const el=$('#status');el.textContent=t;el.dataset.state=state||'ok'}
+function writeDraft(){try{localStorage.setItem(draftKey(),JSON.stringify({id:currentId,tree,at:Date.now()}))}catch{}}
+function clearDraft(){try{localStorage.removeItem(draftKey())}catch{}}
+function persist(){if(!currentId||!session)return;dirty=true;writeDraft();setStatus('Speichert …','busy');clearTimeout(saveT);saveT=setTimeout(storeNow,700)}
+function upsertMeta(m){mapsMeta=mapsMeta.filter(x=>x.id!==m.id);mapsMeta.unshift(m);mapsMeta.sort((a,b)=>b.updated-a.updated);if(!$('#drawer').hidden)renderList()}
+async function storeNow(){
+  clearTimeout(saveT);clearTimeout(retryT);
+  if(saving){try{await saving}catch{}}
+  if(!dirty||!currentId||!session)return !dirty;
+  const id=currentId,data=JSON.parse(JSON.stringify(tree));dirty=false;
+  saving=api('/maps/'+id,{method:'PUT',body:{tree:data}});
+  try{
+    const d=await saving;saving=null;
+    upsertMeta({id,title:data.text,count:countDesc(data),updated:d.updated});
+    if(!dirty){clearDraft();setStatus('Gespeichert · '+timeStr(d.updated))}
+    return true;
+  }catch(e){
+    saving=null;if(e.status===401)return false;
+    dirty=true;setStatus(e.status===413?'Zu gross zum Speichern':'Nicht gespeichert – neuer Versuch …','warn');
+    if(e.status!==413)retryT=setTimeout(storeNow,4000);
+    return false;
   }
-  let id=lib.current&&lib.maps[lib.current]?lib.current:Object.values(lib.maps).sort((a,b)=>b.updated-a.updated)[0]?.id;
-  if(!id){id=uid();lib.maps[id]={id,tree:blank(),created:Date.now(),updated:Date.now()}}
-  currentId=id;lib.current=id;
-  try{tree=cleanTree(lib.maps[id].tree)}catch{tree=blank()}
-  writeLib();setStatus(canStore?'Gespeichert':'Speichern im Browser ist blockiert');
 }
+function remember(id){try{localStorage.setItem('mindmap:last:'+me().kuerzel,id)}catch{}}
 function clearCanvas(){els.forEach(en=>en.el.remove());els.clear();paths.forEach(p=>p.remove());paths.clear();cancelAnimationFrame(raf)}
 function showMap(edit){
   undoS.length=0;redoS.length=0;updUndo();
@@ -498,37 +570,43 @@ function showMap(edit){
   if(tree.children.length)fit(1,true,.6);else{const r=vp.getBoundingClientRect();k=1;tx=r.width/2;ty=(r.height-60)/2;applyView()}
   if(edit)startEdit(tree.id);
 }
-function openMap(id){
+async function openMap(id){
   if(editingId)finishEdit(true);
-  if(pT)storeNow();
-  lib=readLib();const e=lib.maps[id];if(!e)return;
-  currentId=id;try{tree=cleanTree(e.tree)}catch{tree=blank()}
-  lib.current=id;writeLib();setStatus('Gespeichert');
-  closeDrawer();showMap(false);
+  if(dirty)await storeNow();
+  setStatus('Lädt …','busy');
+  let d;try{d=await api('/maps/'+encodeURIComponent(id))}catch(e){if(e.status!==401){setStatus('Laden fehlgeschlagen','warn');toast(e.message)}return false}
+  currentId=id;try{tree=cleanTree(d.tree)}catch{tree=blank()}
+  remember(id);setStatus('Gespeichert · '+timeStr(d.updated||Date.now()));
+  closeDrawer();showMap(false);return true;
 }
-function newMap(){
+async function newMap(edit=true){
   if(editingId)finishEdit(true);
-  if(pT)storeNow();
-  currentId=uid();tree=blank();storeNow();
-  closeDrawer();showMap(true);
+  if(dirty)await storeNow();
+  currentId=uid();tree=blank();dirty=true;remember(currentId);
+  closeDrawer();showMap(edit!==false);
+  await storeNow();
 }
-function duplicateMap(id){
-  if(pT)storeNow();
-  lib=readLib();const e=lib.maps[id];if(!e)return;
-  const copy=JSON.parse(JSON.stringify(e.tree));copy.text=(copy.text||'Mindmap')+' (Kopie)';
-  const nid=uid();lib.maps[nid]={id:nid,tree:copy,created:Date.now(),updated:Date.now()};writeLib();
-  openMap(nid);toast('Kopie erstellt');
+async function duplicateMap(id){
+  if(editingId)finishEdit(true);
+  if(dirty)await storeNow();
+  let src;
+  if(id===currentId)src=JSON.parse(JSON.stringify(tree));
+  else{try{src=(await api('/maps/'+encodeURIComponent(id))).tree}catch(e){toast(e.message);return}}
+  src.text=(src.text||'Mindmap')+' (Kopie)';
+  currentId=uid();tree=cleanTree(src);dirty=true;remember(currentId);
+  closeDrawer();showMap(false);await storeNow();toast('Kopie erstellt');
 }
 function deleteMap(id){
-  lib=readLib();const e=lib.maps[id];if(!e)return;
-  const name=e.tree?.text||'Mindmap',n=countDesc(cleanTree(e.tree));
+  const meta=mapsMeta.find(m=>m.id===id);if(!meta)return;
+  const name=meta.title||'Unbenannt',n=meta.count||0;
   modal(`<h2>Mindmap löschen?</h2><p></p><div class="mbtns"><button class="btn" data-close>Abbrechen</button><button class="btn primary" id="mDel" style="background:var(--danger);border-color:var(--danger)">Löschen</button></div>`,box=>{
-    box.querySelector('p').textContent=`«${name}» mit ${n} Punkt${n===1?'':'en'} wird endgültig aus diesem Browser gelöscht.`;
-    box.querySelector('#mDel').onclick=()=>{
-      closeModal();lib=readLib();delete lib.maps[id];
-      if(id===currentId){const next=Object.values(lib.maps).sort((a,b)=>b.updated-a.updated)[0];
-        if(next){writeLib();openMap(next.id);openDrawer()}else{writeLib();currentId=null;newMap()}}
-      else{writeLib();renderList()}
+    box.querySelector('p').textContent=`«${name}» mit ${n} Punkt${n===1?'':'en'} wird endgültig gelöscht.`;
+    box.querySelector('#mDel').onclick=async()=>{
+      closeModal();
+      try{await api('/maps/'+encodeURIComponent(id),{method:'DELETE'})}catch(e){toast(e.message);return}
+      mapsMeta=mapsMeta.filter(m=>m.id!==id);
+      if(id===currentId){dirty=false;clearDraft();const next=mapsMeta[0];if(next){await openMap(next.id);openDrawer()}else await newMap(false)}
+      else renderList();
       toast(`«${name.length>30?name.slice(0,29)+'…':name}» gelöscht`);
     }});
 }
@@ -540,17 +618,14 @@ function relTime(t){
 const IC_DUP='<svg viewBox="0 0 24 24"><rect x="8" y="8" width="12" height="12" rx="2"/><path d="M16 8V5a1 1 0 0 0-1-1H5a1 1 0 0 0-1 1v10a1 1 0 0 0 1 1h3"/></svg>';
 const IC_DEL='<svg viewBox="0 0 24 24"><path d="M4 7h16M10 11v6M14 11v6M6 7l1 13h10l1-13M9 7V4h6v3"/></svg>';
 function renderList(){
-  lib=readLib();
   const q=$('#mapSearch').value.trim().toLowerCase();
-  const all=Object.values(lib.maps).sort((a,b)=>b.updated-a.updated);
-  const list=all.filter(e=>!q||JSON.stringify(e.tree).toLowerCase().includes(q));
+  const list=mapsMeta.filter(e=>!q||(e.title||'').toLowerCase().includes(q));
   const ul=$('#mapList');ul.innerHTML='';
-  if(!list.length){ul.innerHTML=`<li class="empty">${q?'Keine Mindmap gefunden.':'Noch keine Mindmaps.'}</li>`;return}
+  if(!list.length){ul.innerHTML=`<li class="empty">${q?'Keine Mindmap mit diesem Titel.':'Noch keine Mindmaps.'}</li>`;return}
   list.forEach(e=>{
-    let t;try{t=cleanTree(e.tree)}catch{return}
-    const n=countDesc(t),li=document.createElement('li');li.className='mapitem'+(e.id===currentId?' cur':'');
+    const n=e.count||0,li=document.createElement('li');li.className='mapitem'+(e.id===currentId?' cur':'');
     li.innerHTML=`<button class="open" title="Öffnen"><span class="mt"></span><span class="mm">${relTime(e.updated)} · ${n} Punkt${n===1?'':'e'}</span></button><button class="mi" data-a="dup" title="Duplizieren" aria-label="Duplizieren">${IC_DUP}</button><button class="mi del" data-a="del" title="Löschen" aria-label="Löschen">${IC_DEL}</button>`;
-    li.querySelector('.mt').textContent=t.text||'Unbenannt';
+    li.querySelector('.mt').textContent=e.title||'Unbenannt';
     if(e.id===currentId)li.querySelector('.open').setAttribute('aria-current','true');
     li.querySelector('.open').onclick=()=>e.id===currentId?closeDrawer():openMap(e.id);
     li.querySelector('[data-a=dup]').onclick=()=>duplicateMap(e.id);
@@ -558,53 +633,204 @@ function renderList(){
     ul.appendChild(li);
   });
 }
-function openDrawer(){if(pT)storeNow();$('#drawer').hidden=false;$('#scrim').hidden=false;$('#mapsBtn').setAttribute('aria-expanded','true');renderList()}
+async function refreshList(){try{mapsMeta=(await api('/maps')).maps;if(dirty)upsertMeta({id:currentId,title:tree.text,count:countDesc(tree),updated:Date.now()});renderList()}catch{}}
+function openDrawer(){$('#drawer').hidden=false;$('#scrim').hidden=false;$('#mapsBtn').setAttribute('aria-expanded','true');renderList();refreshList()}
 function closeDrawer(){$('#drawer').hidden=true;$('#scrim').hidden=true;$('#mapsBtn').setAttribute('aria-expanded','false')}
-function exportBackup(){
-  if(pT)storeNow();lib=readLib();
-  const maps=Object.values(lib.maps);
-  const d=new Date(),p=x=>String(x).padStart(2,'0');
-  download(`mindmaps-sicherung_${d.getFullYear()}-${p(d.getMonth()+1)}-${p(d.getDate())}.json`,new Blob([JSON.stringify({app:'mindmap',version:1,exported:d.toISOString(),maps},null,1)],{type:'application/json'}));
-  toast(`Sicherung mit ${maps.length} Mindmap${maps.length===1?'':'s'} heruntergeladen`);
+async function exportBackup(){
+  if(dirty)await storeNow();
+  toast('Sicherung wird erstellt …');
+  try{
+    const maps=[];for(const m of mapsMeta){const d=await api('/maps/'+encodeURIComponent(m.id));maps.push({id:d.id||m.id,tree:d.tree,created:d.created,updated:d.updated})}
+    const d=new Date(),p=x=>String(x).padStart(2,'0');
+    download(`mindmaps-${me().kuerzel}_${d.getFullYear()}-${p(d.getMonth()+1)}-${p(d.getDate())}.json`,new Blob([JSON.stringify({app:'mindmap',version:1,exported:d.toISOString(),maps},null,1)],{type:'application/json'}));
+    toast(`Sicherung mit ${maps.length} Mindmap${maps.length===1?'':'s'} heruntergeladen`);
+  }catch(e){toast(e.message)}
+}
+async function uploadMaps(maps){
+  let added=0;
+  for(const m of maps){
+    if(!m||!m.tree)continue;
+    let t;try{t=cleanTree(m.tree)}catch{continue}
+    const id=/^[A-Za-z0-9_-]{4,64}$/.test(String(m.id||''))?String(m.id):uid();
+    const cur=mapsMeta.find(x=>x.id===id);
+    if(cur&&cur.updated>=(m.updated||0))continue;
+    const d=await api('/maps/'+id,{method:'PUT',body:{tree:t}});
+    upsertMeta({id,title:t.text,count:countDesc(t),updated:d.updated});added++;
+  }
+  return added;
 }
 function importBackup(file){
   const r=new FileReader();
-  r.onload=()=>{
-    try{
-      const d=JSON.parse(r.result);
-      const maps=Array.isArray(d.maps)?d.maps:(d.tree?[{id:d.doc||uid(),tree:d.tree,updated:Date.now()}]:null);
-      if(!maps)throw 0;
-      lib=readLib();let added=0;
-      maps.forEach(m=>{if(!m||!m.tree)return;const t=cleanTree(m.tree),id=String(m.id||uid()),cur=lib.maps[id];
-        if(!cur||(m.updated||0)>cur.updated){lib.maps[id]={id,tree:t,created:m.created||Date.now(),updated:m.updated||Date.now()};added++}});
-      if(!writeLib())throw 1;
-      renderList();
-      if(lib.maps[currentId]&&JSON.stringify(lib.maps[currentId].tree)!==JSON.stringify(tree))openMap(currentId),openDrawer();
-      toast(added?`${added} Mindmap${added===1?'':'s'} geladen`:'Alles war schon aktuell');
-    }catch{modal(`<h2>Sicherung konnte nicht geladen werden</h2><p>Die Datei ist keine gültige Mindmap-Sicherung. Nimm eine Datei, die du hier mit «Sicherung herunterladen» erstellt hast.</p><div class="mbtns"><button class="btn primary" data-close>OK</button></div>`)}
+  r.onload=async()=>{
+    let maps;
+    try{const d=JSON.parse(r.result);maps=Array.isArray(d.maps)?d.maps:(d.tree?[{id:d.doc,tree:d.tree,updated:Date.now()}]:null);if(!maps)throw 0}
+    catch{modal(`<h2>Sicherung konnte nicht geladen werden</h2><p>Die Datei ist keine gültige Mindmap-Sicherung. Nimm eine Datei, die du hier mit «Sicherung herunterladen» erstellt hast.</p><div class="mbtns"><button class="btn primary" data-close>OK</button></div>`);return}
+    try{const n=await uploadMaps(maps);renderList();toast(n?`${n} Mindmap${n===1?'':'s'} geladen`:'Alles war schon aktuell')}catch(e){toast(e.message)}
   };
   r.readAsText(file);
 }
-addEventListener('storage',e=>{if(e.key===LIB&&!$('#drawer').hidden)renderList()});
+function offerMigration(){
+  let lib=null;try{lib=JSON.parse(localStorage.getItem('mindmap:library')||'null')}catch{}
+  const maps=lib?.maps?Object.values(lib.maps).filter(m=>m&&m.tree):[];
+  let done=false;try{done=localStorage.getItem('mindmap:migrated:'+me().kuerzel)==='1'}catch{}
+  if(!maps.length||done)return;
+  const mark=()=>{try{localStorage.setItem('mindmap:migrated:'+me().kuerzel,'1')}catch{}};
+  modal(`<h2>Mindmaps aus diesem Browser übernehmen?</h2><p>In diesem Browser liegen noch ${maps.length} Mindmap${maps.length===1?'':'s'} von früher. Soll ich sie in dein Konto übernehmen?</p><div class="mbtns"><button class="btn" id="mNo">Nein, danke</button><button class="btn primary" id="mYes">Übernehmen</button></div>`,box=>{
+    box.querySelector('#mNo').onclick=()=>{mark();closeModal()};
+    box.querySelector('#mYes').onclick=async()=>{closeModal();try{const n=await uploadMaps(maps);mark();toast(`${n} Mindmap${n===1?'':'s'} übernommen`,'Anzeigen',openDrawer)}catch(e){toast(e.message)}};
+  });
+}
+
+/* ---- Anmeldung ---- */
+function showLogin(msg){
+  $('#login').hidden=false;
+  const e=$('#lerr');e.hidden=!msg;e.textContent=msg||'';
+  setTimeout(()=>($('#lk').value?$('#lp'):$('#lk')).focus(),30);
+}
+function endSession(msg){
+  clearTimeout(saveT);clearTimeout(retryT);
+  setSession(null);closeModal(true);closeDrawer();showLogin(msg);
+}
+function updateUserUi(){
+  const u=me();if(!u)return;
+  const label=(u.kuerzel||'?').slice(0,2);
+  $('#userBtn').textContent=label;$('#userBtn').title=`Angemeldet als ${u.name||u.kuerzel}`;
+  $('#whoName').textContent=u.name||u.kuerzel;$('#whoK').textContent=`Kürzel: ${u.kuerzel}${u.role==='admin'?' · Admin':''}`;
+  $('#adminItem').hidden=u.role!=='admin';
+}
+async function enterApp(){
+  $('#login').hidden=true;updateUserUi();setStatus('Lädt …','busy');
+  try{mapsMeta=(await api('/maps')).maps}catch(e){if(e.status!==401){setStatus('Laden fehlgeschlagen','warn');toast(e.message,'Nochmal',enterApp)}return}
+  let draft=null;try{draft=JSON.parse(localStorage.getItem(draftKey())||'null')}catch{}
+  if(draft?.id&&draft.tree){
+    try{const t=cleanTree(draft.tree),d=await api('/maps/'+draft.id,{method:'PUT',body:{tree:t}});upsertMeta({id:draft.id,title:t.text,count:countDesc(t),updated:d.updated});clearDraft()}catch{}
+  }
+  let last=null;try{last=localStorage.getItem('mindmap:last:'+me().kuerzel)}catch{}
+  const target=mapsMeta.find(m=>m.id===last)||mapsMeta[0];
+  if(!(target&&await openMap(target.id)))await newMap(false);
+  booted=true;
+  if(me().mustChange)changePassword(true);else offerMigration();
+}
+async function boot(){
+  if(!session?.token){showLogin();return}
+  try{const u=await api('/me');setSession({...session,user:u})}
+  catch(e){if(e.status!==401)showLogin(e.message);return}
+  await enterApp();
+}
+$('#loginForm').addEventListener('submit',async e=>{
+  e.preventDefault();
+  const k=$('#lk').value.trim(),p=$('#lp').value,err=$('#lerr'),btn=$('#lbtn');
+  if(!k||!p){err.hidden=false;err.textContent='Bitte Kürzel und Passwort eingeben.';return}
+  btn.disabled=true;btn.textContent='Anmelden …';err.hidden=true;
+  try{const d=await api('/login',{method:'POST',body:{kuerzel:k,password:p}});setSession({token:d.token,user:d.user});$('#lp').value='';await enterApp()}
+  catch(x){err.hidden=false;err.textContent=x.message;$('#lp').select()}
+  finally{btn.disabled=false;btn.textContent='Anmelden'}
+});
+async function logout(){
+  if(editingId)finishEdit(true);
+  if(dirty)await storeNow();
+  setSession(null);location.reload();
+}
+function changePassword(force){
+  modal(`<h2>${force?'Neues Passwort festlegen':'Passwort ändern'}</h2><p>${force?'Du meldest dich zum ersten Mal an. Lege jetzt dein eigenes Passwort fest.':'Mindestens 8 Zeichen.'}</p>
+    <form id="pwForm" novalidate>
+      <label class="field">Bisheriges Passwort<input type="password" id="pOld" autocomplete="current-password"></label>
+      <label class="field">Neues Passwort<input type="password" id="pNew" autocomplete="new-password" minlength="8"></label>
+      <label class="field">Neues Passwort wiederholen<input type="password" id="pNew2" autocomplete="new-password"></label>
+      <p class="lerr" id="pErr" hidden></p>
+      <div class="mbtns">${force?'':'<button type="button" class="btn" data-close>Abbrechen</button>'}<button class="btn primary" type="submit">Passwort speichern</button></div>
+    </form>`,box=>{
+    box.querySelector('#pwForm').onsubmit=async e=>{
+      e.preventDefault();
+      const o=box.querySelector('#pOld').value,n=box.querySelector('#pNew').value,n2=box.querySelector('#pNew2').value,er=box.querySelector('#pErr');
+      const show=t=>{er.hidden=false;er.textContent=t};
+      if(n.length<8)return show('Das neue Passwort braucht mindestens 8 Zeichen.');
+      if(n!==n2)return show('Die beiden neuen Passwörter stimmen nicht überein.');
+      try{const d=await api('/password',{method:'POST',body:{oldPassword:o,newPassword:n}});setSession({token:d.token,user:d.user});updateUserUi();closeModal(true);toast('Passwort geändert');if(force)offerMigration()}
+      catch(x){if(x.status!==401)show(x.message)}
+    };
+  },{locked:force});
+}
+
+/* ---- Benutzerverwaltung ---- */
+function genPassword(){const A='abcdefghjkmnpqrstuvwxyzABCDEFGHJKLMNPQRSTUVWXYZ23456789',b=new Uint32Array(12);crypto.getRandomValues(b);return [...b].map(x=>A[x%A.length]).join('')}
+async function showAdmin(note){
+  modal(`<h2>Benutzer verwalten</h2><p>Lege Konten an und setze Passwörter. Gib Kürzel und Passwort der Person persönlich weiter. Jede Person sieht nur ihre eigenen Mindmaps.</p>
+    <div class="ulist" id="uList"><div class="empty">Lädt …</div></div>
+    <div id="uNote"></div>
+    <h3>Neues Konto anlegen</h3>
+    <form class="uform" id="uForm" novalidate>
+      <label class="field">Kürzel<input id="uK" maxlength="24" autocapitalize="none" autocorrect="off" spellcheck="false" autocomplete="off" placeholder="z. B. ab"></label>
+      <label class="field">Name<input id="uN" maxlength="80" autocomplete="off" placeholder="Vor- und Nachname"></label>
+      <label class="field full">Passwort<span class="pw"><input id="uP" autocomplete="off" spellcheck="false" placeholder="mindestens 8 Zeichen"><button type="button" class="btn" id="uGen">Vorschlagen</button></span></label>
+      <label class="chk full"><input type="checkbox" id="uA">Admin-Rechte (darf Benutzer verwalten)</label>
+      <p class="lerr full" id="uErr" hidden></p>
+      <div class="mbtns full"><button type="button" class="btn" data-close>Schliessen</button><button class="btn primary" type="submit">Konto anlegen</button></div>
+    </form>`,box=>{
+    if(note)box.querySelector('#uNote').append(note);
+    box.querySelector('#uGen').onclick=()=>{box.querySelector('#uP').value=genPassword()};
+    box.querySelector('#uForm').onsubmit=async e=>{
+      e.preventDefault();
+      const k=box.querySelector('#uK').value.trim().toLowerCase(),name=box.querySelector('#uN').value.trim(),pw=box.querySelector('#uP').value,admin=box.querySelector('#uA').checked,er=box.querySelector('#uErr');
+      const show=t=>{er.hidden=false;er.textContent=t};
+      if(!/^[a-z0-9][a-z0-9._-]{1,23}$/.test(k))return show('Das Kürzel braucht 2–24 Zeichen: Buchstaben, Zahlen, Punkt, Bindestrich oder Unterstrich.');
+      if(pw.length<8)return show('Das Passwort braucht mindestens 8 Zeichen. «Vorschlagen» erzeugt eines.');
+      try{await api('/admin/users',{method:'POST',body:{kuerzel:k,name,password:pw,role:admin?'admin':'user'}})}catch(x){if(x.status!==401)show(x.message);return}
+      showAdmin(createdNote(`Konto «${k}» angelegt.`,k,pw));
+    };
+    loadUsers(box);
+  },{wide:true});
+}
+function createdNote(title,k,pw){
+  const d=document.createElement('div');d.className='created';
+  d.innerHTML='<b></b><br>Kürzel: <code></code> · Passwort: <code></code><br><span style="color:var(--muted)">Notiere das Passwort jetzt. Es wird nicht mehr angezeigt.</span>';
+  d.querySelector('b').textContent=title;const c=d.querySelectorAll('code');c[0].textContent=k;c[1].textContent=pw;return d;
+}
+async function loadUsers(box){
+  const list=box.querySelector('#uList');
+  let users;try{users=(await api('/admin/users')).users}catch(x){if(x.status!==401)list.innerHTML=`<div class="empty"></div>`,list.firstChild.textContent=x.message;return}
+  list.innerHTML='';
+  users.forEach(u=>{
+    const self=u.kuerzel===me().kuerzel,row=document.createElement('div');row.className='urow';
+    row.innerHTML=`<div class="uinfo"><b><span class="k"></span>${u.role==='admin'?'<span class="tag-admin">Admin</span>':''}</b><span class="n"></span></div>
+      <div class="uact"><button class="btn sm" data-a="pw">Passwort setzen</button>${self?'':`<button class="btn sm" data-a="role">${u.role==='admin'?'Admin entfernen':'Zum Admin machen'}</button><button class="btn sm danger" data-a="del">Löschen</button>`}</div>`;
+    row.querySelector('.k').textContent=u.kuerzel+(self?' (du)':'');
+    row.querySelector('.n').textContent=`${u.name||'Ohne Namen'} · ${u.maps} Mindmap${u.maps===1?'':'s'}${u.mustChange?' · muss Passwort ändern':''}`;
+    const act=row.querySelector('.uact');
+    act.querySelector('[data-a=pw]').onclick=()=>{
+      act.innerHTML='<input placeholder="Neues Passwort" autocomplete="off" spellcheck="false"><button class="btn sm" data-a="gen">Vorschlagen</button><button class="btn sm primary" data-a="ok">Setzen</button><button class="btn sm" data-a="no">Abbrechen</button>';
+      const inp=act.querySelector('input');inp.focus();
+      act.querySelector('[data-a=gen]').onclick=()=>{inp.value=genPassword();inp.focus()};
+      act.querySelector('[data-a=no]').onclick=()=>loadUsers(box);
+      const go=async()=>{
+        if(inp.value.length<8){toast('Das Passwort braucht mindestens 8 Zeichen.');inp.focus();return}
+        try{await api('/admin/users/'+encodeURIComponent(u.kuerzel),{method:'PATCH',body:{password:inp.value}})}catch(x){if(x.status!==401)toast(x.message);return}
+        if(self){toast('Passwort geändert. Bitte melde dich neu an.');setTimeout(()=>endSession(),1200);return}
+        showAdmin(createdNote(`Neues Passwort für «${u.kuerzel}» gesetzt.`,u.kuerzel,inp.value));
+      };
+      act.querySelector('[data-a=ok]').onclick=go;inp.onkeydown=e=>{if(e.key==='Enter'){e.preventDefault();go()}};
+    };
+    const role=act.querySelector('[data-a=role]');
+    if(role)role.onclick=async()=>{try{await api('/admin/users/'+encodeURIComponent(u.kuerzel),{method:'PATCH',body:{role:u.role==='admin'?'user':'admin'}});loadUsers(box)}catch(x){if(x.status!==401)toast(x.message)}};
+    const del=act.querySelector('[data-a=del]');
+    if(del)del.onclick=async()=>{
+      if(!del.classList.contains('armed')){del.classList.add('armed');del.textContent=u.maps?`Mit ${u.maps} Mindmap${u.maps===1?'':'s'} löschen?`:'Wirklich löschen?';setTimeout(()=>{if(del.isConnected){del.classList.remove('armed');del.textContent='Löschen'}},4000);return}
+      try{await api('/admin/users/'+encodeURIComponent(u.kuerzel),{method:'DELETE'});toast(`Konto «${u.kuerzel}» gelöscht`);loadUsers(box)}catch(x){if(x.status!==401)toast(x.message)}
+    };
+    list.appendChild(row);
+  });
+}
 function slug(s){return (s||'').normalize('NFD').replace(/[̀-ͯ]/g,'').replace(/[^\w]+/g,'-').replace(/^-+|-+$/g,'').toLowerCase().slice(0,60)||'mindmap'}
 function download(name,blob){
   const a=document.createElement('a');a.href=URL.createObjectURL(blob);a.download=name;document.body.appendChild(a);a.click();
   setTimeout(()=>{URL.revokeObjectURL(a.href);a.remove()},1500);
 }
-function saveNow(){
+async function saveNow(){
   if(editingId)finishEdit(true);
-  const ok=storeNow();
-  toast(ok?'Gespeichert unter «Meine Mindmaps»':'Speichern im Browser nicht möglich. Lade die Mindmap als HTML-Datei herunter.',ok?'Alle anzeigen':null,openDrawer);
-}
-function saveFile(){
-  if(editingId)finishEdit(true);
-  storeNow();
-  const savedAt=new Date().toISOString();
-  lib=readLib();if(lib.maps[currentId]){lib.maps[currentId].base=savedAt;writeLib()}
-  const state=JSON.stringify({doc:currentId,savedAt,tree}).replace(/</g,'\\u003c');
-  const out=SRC.replace(/(<script id="mm-state" type="application\/json">)[\s\S]*?(<\/script>)/,(m,a,b)=>a+state+b);
-  download(slug(tree.text)+'.html',new Blob([out],{type:'text/html'}));
-  toast('HTML-Datei heruntergeladen. Öffne sie im Browser, um weiterzuarbeiten.');
+  if(!dirty){toast('Alles gespeichert','Meine Mindmaps',openDrawer);return}
+  setStatus('Speichert …','busy');
+  const ok=await storeNow();
+  if(ok)toast('Gespeichert','Meine Mindmaps',openDrawer);else toast('Speichern hat nicht geklappt. Ich versuche es automatisch weiter.');
 }
 
 /* ============ Bearbeiten ============ */
@@ -826,6 +1052,7 @@ function nav(dir){
 }
 document.addEventListener('keydown',e=>{
   const mod=e.ctrlKey||e.metaKey,key=e.key.toLowerCase();
+  if(!$('#login').hidden||!booted)return;
   if(!$('#modal').hidden){if(e.key==='Escape')closeModal();return}
   if(mod&&key==='s'){e.preventDefault();saveNow();return}
   if(editingId)return;
@@ -896,22 +1123,26 @@ function toast(msg,label,fn){
   if(label){b.hidden=false;b.textContent=label;b.onclick=()=>{t.hidden=true;fn()}}else b.hidden=true;
   t.hidden=false;clearTimeout(toastT);toastT=setTimeout(()=>t.hidden=true,label?5500:3500);
 }
-function modal(html,bind){const m=$('#modal'),box=$('#mbox');box.innerHTML=html;m.hidden=false;
-  box.querySelectorAll('[data-close]').forEach(b=>b.onclick=closeModal);bind&&bind(box);
-  const f=box.querySelector('textarea,.primary,button');f&&f.focus()}
-function closeModal(){$('#modal').hidden=true;focusVp()}
+let modalLocked=false;
+function modal(html,bind,opts={}){const m=$('#modal'),box=$('#mbox');box.className='mbox'+(opts.wide?' wide':'');box.innerHTML=html;m.hidden=false;modalLocked=!!opts.locked;
+  box.querySelectorAll('[data-close]').forEach(b=>b.onclick=()=>closeModal());bind&&bind(box);
+  const f=box.querySelector('input,textarea,.primary,button');f&&f.focus()}
+function closeModal(force){if(modalLocked&&force!==true)return;modalLocked=false;$('#modal').hidden=true;if($('#login').hidden)focusVp()}
 $('#modal').addEventListener('pointerdown',e=>{if(e.target.id==='modal')closeModal()});
-function openMenu(){$('#menu').hidden=false;$('#moreBtn').setAttribute('aria-expanded','true');$('#menu button').focus()}
-function closeMenu(){$('#menu').hidden=true;$('#moreBtn').setAttribute('aria-expanded','false')}
-$('#moreBtn').onclick=e=>{e.stopPropagation();$('#menu').hidden?openMenu():closeMenu()};
-document.addEventListener('pointerdown',e=>{if(!e.target.closest('.menuwrap'))closeMenu()});
-$('#menu').addEventListener('keydown',e=>{
-  const items=[...$('#menu').querySelectorAll('button')],i=items.indexOf(document.activeElement);
-  if(e.key==='ArrowDown'){e.preventDefault();items[(i+1)%items.length].focus()}
-  if(e.key==='ArrowUp'){e.preventDefault();items[(i-1+items.length)%items.length].focus()}
-  if(e.key==='Escape'){closeMenu();$('#moreBtn').focus()}
+const MENUS=[['#moreBtn','#menu'],['#userBtn','#userMenu']];
+function closeMenu(){MENUS.forEach(([b,m])=>{$(m).hidden=true;$(b).setAttribute('aria-expanded','false')})}
+MENUS.forEach(([bs,ms])=>{
+  const btn=$(bs),menu=$(ms);
+  btn.onclick=e=>{e.stopPropagation();const open=menu.hidden;closeMenu();if(open){menu.hidden=false;btn.setAttribute('aria-expanded','true');menu.querySelector('button:not([hidden])').focus()}};
+  menu.addEventListener('keydown',e=>{
+    const items=[...menu.querySelectorAll('button:not([hidden])')],i=items.indexOf(document.activeElement);
+    if(e.key==='ArrowDown'){e.preventDefault();items[(i+1)%items.length].focus()}
+    if(e.key==='ArrowUp'){e.preventDefault();items[(i-1+items.length)%items.length].focus()}
+    if(e.key==='Escape'){closeMenu();btn.focus()}
+  });
+  menu.addEventListener('click',e=>{const b=e.target.closest('button');if(!b)return;closeMenu();if(editingId)finishEdit(true);ACT[b.dataset.act]?.()});
 });
-$('#menu').addEventListener('click',e=>{const b=e.target.closest('button');if(!b)return;closeMenu();if(editingId)finishEdit(true);ACT[b.dataset.act]?.()});
+document.addEventListener('pointerdown',e=>{if(!e.target.closest('.menuwrap'))closeMenu()});
 
 function outline(){const out=[];(function w(n,d){out.push('  '.repeat(d)+(d?'- ':'')+n.text);n.children.forEach(c=>w(c,d+1))})(tree,0);return out.join('\n')}
 function parseList(text){
@@ -929,7 +1160,9 @@ function parseList(text){
 const ACT={
   new(){newMap()},
   dup(){duplicateMap(currentId)},
-  html(){saveFile()},
+  password(){changePassword(false)},
+  admin(){showAdmin()},
+  logout(){logout()},
   import(){modal(`<h2>Aus Liste erstellen</h2><p>Füge eine eingerückte Liste ein, eine Zeile pro Punkt. Einrückung mit Leerzeichen oder Tab bestimmt die Ebene. Die bestehende Mindmap wird ersetzt.</p><textarea id="mList" spellcheck="false" placeholder="Projekt&#10;  Ziele&#10;    Mehr Kunden&#10;    Weniger Aufwand&#10;  Team&#10;  Budget"></textarea><div class="mbtns"><button class="btn" data-close>Abbrechen</button><button class="btn primary" id="mImp">Mindmap erstellen</button></div>`,
     box=>{const ta=box.querySelector('#mList');
       ta.addEventListener('keydown',e=>{if(e.key==='Tab'){e.preventDefault();document.execCommand('insertText',false,'  ')}});
@@ -1003,13 +1236,13 @@ function exportPng(){
 $('#undoBtn').onclick=undo;$('#redoBtn').onclick=redo;$('#saveBtn').onclick=saveNow;
 $('#mapsBtn').onclick=()=>$('#drawer').hidden?openDrawer():closeDrawer();
 $('#drawerClose').onclick=closeDrawer;$('#scrim').onclick=closeDrawer;
-$('#newMapBtn').onclick=newMap;
+$('#newMapBtn').onclick=()=>newMap(true);
 $('#mapSearch').addEventListener('input',renderList);
 $('#mapSearch').addEventListener('keydown',e=>{if(e.key==='Escape'){e.stopPropagation();if(e.target.value)e.target.value='',renderList();else closeDrawer()}});
 $('#backupExp').onclick=exportBackup;$('#backupImp').onclick=()=>$('#backupFile').click();
 $('#backupFile').onchange=e=>{const f=e.target.files[0];if(f)importBackup(f);e.target.value=''};
-addEventListener('pagehide',()=>{if(pT)storeNow()});
-document.addEventListener('visibilitychange',()=>{if(document.hidden&&pT)storeNow()});
+document.addEventListener('visibilitychange',()=>{if(document.hidden&&dirty)storeNow()});
+addEventListener('beforeunload',e=>{if(dirty){storeNow();e.preventDefault();e.returnValue=''}});
 $('#zin').onclick=()=>zoomBy(1.25);$('#zout').onclick=()=>zoomBy(.8);$('#zfit').onclick=()=>fit(1);
 let hintSeen=false;try{hintSeen=localStorage.getItem('mindmap:hint')==='1'}catch{}
 $('#hint').hidden=hintSeen;
@@ -1017,7 +1250,7 @@ $('#hintClose').onclick=()=>{$('#hint').hidden=true;try{localStorage.setItem('mi
 $('#hintHelp').onclick=showHelp;
 let rT=0;addEventListener('resize',()=>{clearTimeout(rT);rT=setTimeout(()=>{if(tree.children.length)ensureVisible(selectedId||tree.id);else fit(1,true)},150)});
 
-loadInitial();showMap(false);
+tree=blank();reindex();boot();
 if(document.fonts)document.fonts.ready.then(()=>{mcache.clear();render(null,true)});
 </script>
 </body>
