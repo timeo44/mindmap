@@ -221,6 +221,34 @@ kbd{font:600 10.5px/1 var(--font);padding:3px 5px;border-radius:5px;border:1px s
 .created{background:var(--bg);border:1px solid var(--line);border-radius:12px;padding:12px 14px;margin-top:12px;font-size:13.5px;line-height:1.6}
 .created code{font:600 14px ui-monospace,SFMono-Regular,Menlo,Consolas,monospace;background:var(--surface);border:1px solid var(--line);padding:1px 6px;border-radius:6px;user-select:all}
 @media (max-width:640px){.uform{grid-template-columns:1fr}.uact input{width:100%}}
+.drop{border:1.5px dashed var(--line);border-radius:12px;padding:16px;display:flex;flex-direction:column;align-items:center;gap:4px;text-align:center;color:var(--muted);font-size:13px;margin-bottom:12px;transition:border-color .15s,background .15s}
+.drop.over{border-color:var(--accent);background:color-mix(in oklab,var(--accent) 7%,var(--surface))}
+.drop svg{width:24px;height:24px;stroke:var(--muted);fill:none;stroke-width:2;stroke-linecap:round;stroke-linejoin:round}
+.drop b{color:var(--ink);font-weight:600}
+.drop small{font-size:11.5px}
+.drop .link{font-size:13px;padding:0}
+.mbox #iText{height:150px}
+.ipre{font-size:13px;margin:-4px 0 10px;min-height:1.4em;line-height:1.45}
+.ipre.ok{color:#2b8a5c}
+.ipre.bad{color:var(--danger)}
+.aip{border:1px solid var(--line);border-radius:12px;padding:0 14px}
+.aip summary{cursor:pointer;padding:12px 0;font-weight:600;font-size:13.5px;display:flex;align-items:center;gap:8px;list-style:none}
+.aip summary::-webkit-details-marker{display:none}
+.aip summary::before{content:"";width:7px;height:7px;border-right:2px solid var(--muted);border-bottom:2px solid var(--muted);transform:rotate(-45deg);transition:transform .15s;flex:none;margin-right:2px}
+.aip[open] summary::before{transform:rotate(45deg)}
+.aip summary small{font-weight:400;color:var(--muted)}
+.aip[open]{padding-bottom:14px}
+.aip ol{margin:0 0 10px;padding-left:20px;color:var(--muted);font-size:13px;line-height:1.6}
+.aip pre{white-space:pre-wrap;background:var(--bg);border:1px solid var(--line);border-radius:10px;padding:11px 12px;font:12px/1.55 ui-monospace,SFMono-Regular,Menlo,Consolas,monospace;max-height:230px;overflow:auto;margin:0 0 10px;color:var(--ink)}
+.fmt{display:grid;grid-template-columns:repeat(5,1fr);gap:8px;margin-bottom:12px}
+@media (max-width:640px){.fmt{grid-template-columns:1fr}.fmt label{flex-direction:row;align-items:baseline;gap:10px}}
+.fmt label{position:relative;border:1.5px solid var(--line);border-radius:12px;padding:11px 12px;cursor:pointer;display:flex;flex-direction:column;gap:2px}
+.fmt label:hover{border-color:color-mix(in oklab,var(--ink) 25%,var(--line))}
+.fmt input{position:absolute;opacity:0;pointer-events:none}
+.fmt label:has(input:checked){border-color:var(--accent);background:color-mix(in oklab,var(--accent) 8%,var(--surface))}
+.fmt label:has(input:focus-visible){outline:2px solid var(--accent);outline-offset:2px}
+.fmt b{font-size:14px}
+.fmt span{font-size:12px;color:var(--muted);line-height:1.35}
 #measure{position:absolute;left:-20000px;top:0;width:4000px;height:10px;visibility:hidden;pointer-events:none}
 #nodes{position:absolute;left:0;top:0;width:4000px}
 
@@ -265,10 +293,9 @@ kbd{font:600 10.5px/1 var(--font);padding:3px 5px;border-radius:5px;border:1px s
         <div class="menu" id="menu" role="menu" hidden>
           <button role="menuitem" data-act="new"><svg viewBox="0 0 24 24"><path d="M14 3H6a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V9z"/><path d="M14 3v6h6"/></svg>Neue Mindmap</button>
           <button role="menuitem" data-act="dup"><svg viewBox="0 0 24 24"><rect x="8" y="8" width="12" height="12" rx="2"/><path d="M16 8V5a1 1 0 0 0-1-1H5a1 1 0 0 0-1 1v10a1 1 0 0 0 1 1h3"/></svg>Diese Mindmap duplizieren</button>
-          <button role="menuitem" data-act="import"><svg viewBox="0 0 24 24"><path d="M8 6h13M8 12h13M8 18h13M3 6h.01M3 12h.01M3 18h.01"/></svg>Aus Liste erstellen …</button>
+          <button role="menuitem" data-act="import"><svg viewBox="0 0 24 24"><path d="M12 15V4"/><path d="m7 9 5-5 5 5"/><path d="M5 15v4a1 1 0 0 0 1 1h12a1 1 0 0 0 1-1v-4"/></svg>Importieren …</button>
           <hr>
-          <button role="menuitem" data-act="copy"><svg viewBox="0 0 24 24"><rect x="8" y="8" width="12" height="12" rx="2"/><path d="M16 8V5a1 1 0 0 0-1-1H5a1 1 0 0 0-1 1v10a1 1 0 0 0 1 1h3"/></svg>Als Liste kopieren</button>
-          <button role="menuitem" data-act="png"><svg viewBox="0 0 24 24"><rect x="3" y="4" width="18" height="16" rx="2"/><circle cx="9" cy="10" r="2"/><path d="m21 17-5-5-9 8"/></svg>Als Bild speichern (PNG)</button>
+          <button role="menuitem" data-act="export"><svg viewBox="0 0 24 24"><path d="M12 4v11"/><path d="m7 10 5 5 5-5"/><path d="M5 20h14"/></svg>Exportieren (PDF, PNG, JPG …)</button>
           <hr>
           <button role="menuitem" data-act="expand"><svg viewBox="0 0 24 24"><path d="M4 9V4h5M20 9V4h-5M4 15v5h5M20 15v5h-5"/></svg>Alles ausklappen</button>
           <button role="menuitem" data-act="help"><svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="9"/><path d="M9.5 9.5a2.5 2.5 0 1 1 3.5 2.3c-.6.3-1 .9-1 1.6V14M12 17h.01"/></svg>Tastenkürzel &amp; Hilfe</button>
@@ -336,6 +363,7 @@ const DUR=matchMedia('(prefers-reduced-motion: reduce)').matches?0:260;
 const uid=()=>Date.now().toString(36)+Math.random().toString(36).slice(2,8);
 
 /* ============ Daten ============ */
+let forceOpen=false;
 let tree,meta=new Map(),byId=new Map(),visible=[];
 let selectedId=null,editingId=null,editState=null;
 const M=n=>meta.get(n.id);
@@ -387,7 +415,7 @@ function measure(n){
 function layout(){
   const vis=[];
   const size=n=>{const m=M(n),s=measure(n);m.w=s.w;m.h=s.h;vis.push(n);
-    const kids=m.depth>0&&n.collapsed?[]:n.children;m.kids=kids;
+    const kids=m.depth>0&&n.collapsed&&!forceOpen?[]:n.children;m.kids=kids;
     let t=0;kids.forEach((c,i)=>{size(c);t+=M(c).sh+(i?(m.depth===0?VGAP*2:VGAP):0)});
     m.kh=t;m.sh=Math.max(m.h,t)};
   size(tree);
@@ -452,7 +480,7 @@ function makeEl(id){
 }
 function paint(en,n){
   const m=M(n),el=en.el,has=n.children.length>0&&m.depth>0;
-  el.className=`node ${kindOf(n)} side-${m.side||'r'}${has?' has':''}${has&&n.collapsed?' folded':''}${n.id===selectedId?' sel':''}${n.id===editingId?' editing':''}${en.gone?' gone':''}${drag&&drag.id===n.id?' dragging':''}`;
+  el.className=`node ${kindOf(n)} side-${m.side||'r'}${has?' has':''}${has&&n.collapsed&&!forceOpen?' folded':''}${n.id===selectedId?' sel':''}${n.id===editingId?' editing':''}${en.gone?' gone':''}${drag&&drag.id===n.id?' dragging':''}`;
   el.style.setProperty('--h',m.hue);el.style.width=m.w+'px';
   if(n.id!==editingId){const l=el.firstChild;if(l.textContent!==n.text)l.textContent=n.text}
   el.children[1].textContent=n.collapsed?countDesc(n):'−';
@@ -1145,17 +1173,133 @@ MENUS.forEach(([bs,ms])=>{
 document.addEventListener('pointerdown',e=>{if(!e.target.closest('.menuwrap'))closeMenu()});
 
 function outline(){const out=[];(function w(n,d){out.push('  '.repeat(d)+(d?'- ':'')+n.text);n.children.forEach(c=>w(c,d+1))})(tree,0);return out.join('\n')}
+const BT='```';
+function stripFences(t){const m=t.match(/```[^\n]*\n([\s\S]*?)```/);return m?m[1]:t}
 function parseList(text){
-  const lines=text.replace(/\t/g,'    ').split(/\r?\n/).filter(l=>l.trim());
-  const root={id:uid(),text:'Mindmap',children:[]},stack=[{ind:-1,node:root}];
+  let lines=stripFences(text).replace(/\t/g,'    ').split(/\r?\n/).filter(l=>l.trim()&&!/^\s*::icon\(/.test(l));
+  const mermaid=lines.length&&/^mindmap\s*$/i.test(lines[0].trim());
+  if(mermaid)lines=lines.slice(1);
+  const root={text:'Mindmap',children:[]},stack=[{ind:-Infinity,node:root}];let hd=-1;
   lines.forEach(l=>{
-    const ind=l.match(/^\s*/)[0].length;
-    const t=l.trim().replace(/^#{1,6}\s+/,'').replace(/^([-*+•–]|\d+[.)])\s+/,'').trim();if(!t)return;
-    const n={id:uid(),text:t.slice(0,500),children:[]};
+    const raw=l.match(/^\s*/)[0].length;let t=l.trim(),ind;
+    const h=!mermaid&&t.match(/^(#{1,6})\s+(.*)$/);
+    if(h){hd=h[1].length-1;ind=hd*10000;t=h[2]}else ind=(hd+1)*10000+raw;
+    if(mermaid){const sh=t.match(/^[\w-]*\s*(\(\(|\)\)|\{\{|\(|\[|\)|\{)([\s\S]*?)(\)\)|\(\(|\}\}|\)|\]|\(|\})$/);if(sh&&sh[2].trim())t=sh[2].trim()}
+    else t=t.replace(/^([-*+•–◦▪]|\d+[.)])\s+/,'').replace(/^\[[ xX]\]\s+/,'').replace(/\[([^\]]+)\]\([^)]*\)/g,'$1').replace(/\*\*(.+?)\*\*/g,'$1').replace(/__(.+?)__/g,'$1').replace(/`([^`]+)`/g,'$1');
+    t=t.trim();if(!t)return;
+    const n={text:t.slice(0,500),children:[]};
     while(stack.length>1&&stack[stack.length-1].ind>=ind)stack.pop();
     stack[stack.length-1].node.children.push(n);stack.push({ind,node:n});
   });
+  if(!root.children.length)throw new Error('leer');
   return root.children.length===1?root.children[0]:root;
+}
+function convNode(o,d=0){
+  if(d>80||!o||typeof o!=='object')return {text:String(o??''),children:[]};
+  const kids=o.children||o.nodes||o.items||o.subtopics||o.topics||o.attached||[];
+  const n={text:String(o.text??o.name??o.title??o.topic??o.label??o.content??'').slice(0,500),children:(Array.isArray(kids)?kids:[]).map(c=>convNode(c,d+1))};
+  ['color','side','collapsed'].forEach(k=>{if(o[k]!=null)n[k]=o[k]});
+  return n;
+}
+function fromJSON(d){
+  if(Array.isArray(d?.maps))return {backup:d.maps.filter(m=>m&&m.tree)};
+  if(d?.tree)return {trees:[convNode(d.tree)]};
+  if(d?.rootTopic)return {trees:[convNode(d.rootTopic)]};
+  if(Array.isArray(d)){if(d[0]?.rootTopic)return {trees:d.map(x=>convNode(x.rootTopic))};return {trees:[d.length===1?convNode(d[0]):{text:'Mindmap',children:d.map(x=>convNode(x))}]}}
+  if(d&&typeof d==='object')return {trees:[convNode(d)]};
+  throw new Error('kein Format');
+}
+function fromXML(text){
+  const doc=new DOMParser().parseFromString(text,'application/xml');
+  if(doc.querySelector('parsererror'))throw new Error('xml');
+  const body=doc.querySelector('opml body');
+  if(body){
+    const conv=el=>({text:el.getAttribute('text')||el.getAttribute('title')||'',children:[...el.children].filter(c=>c.tagName==='outline').map(conv)});
+    const tops=[...body.children].filter(c=>c.tagName==='outline').map(conv);
+    if(!tops.length)throw new Error('leer');
+    return tops.length===1?tops[0]:{text:doc.querySelector('opml head title')?.textContent?.trim()||'Mindmap',children:tops};
+  }
+  const mm=doc.querySelector('map > node');
+  if(mm){
+    const txt=el=>el.getAttribute('TEXT')||[...el.children].find(c=>c.tagName==='richcontent')?.textContent?.replace(/\s+/g,' ').trim()||'';
+    const conv=el=>({text:txt(el),children:[...el.children].filter(c=>c.tagName==='node').map(conv)});
+    return conv(mm);
+  }
+  throw new Error('kein Format');
+}
+function parseAny(text){
+  const t=String(text||'').replace(/^﻿/,'').trim();
+  if(!t)throw new Error('leer');
+  const body=stripFences(t).trim();
+  if(/^[\[{]/.test(body)){let d;try{d=JSON.parse(body)}catch{d=undefined}if(d!==undefined)return fromJSON(d)}
+  if(/^</.test(body))return {trees:[fromXML(body)]};
+  return {trees:[parseList(t)]};
+}
+const AI_PROMPT=['Wandle die angehängte Mindmap in eine eingerückte Textliste um, damit ich sie in mein Mindmap-Tool importieren kann.','',
+'So muss die Liste aussehen:',
+'- Erste Zeile: das zentrale Thema (die Mitte der Mindmap), ohne Einrückung und ohne Strich.',
+'- Jeder weitere Punkt steht auf einer eigenen Zeile und beginnt mit "- ".',
+'- Ein Unterpunkt ist 2 Leerzeichen weiter eingerückt als sein übergeordneter Punkt.',
+'- Übernimm alle Punkte mit genau dem gleichen Text, in der gleichen Reihenfolge und mit der gleichen Hierarchie. Lass nichts weg und erfinde nichts dazu.',
+'- Nur reiner Text: keine Nummerierung, kein Fettdruck, keine Emojis, keine Links, keine Notizen.',
+'- Ist ein Text in der Vorlage unleserlich, schreibe [unleserlich].',
+'- Gib ausschliesslich die Liste in einem einzigen Codeblock aus, ohne Erklärung davor oder danach.','',
+'Beispiel für das Format:',BT,'Projekt Phoenix','  - Ziele','    - Mehr Kunden gewinnen','    - Prozesse vereinfachen','  - Team','    - Anna','  - Budget',BT,'',
+'Hier ist meine Mindmap:'].join('\n');
+function esc(s){return String(s).replace(/[&<>"]/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;'}[c]))}
+function showImport(){
+  let parsed=null;
+  modal(`<h2>Mindmap importieren</h2><p>Lade eine Datei hoch oder füge Text ein. Sie wird als neue Mindmap angelegt, deine bestehenden bleiben unverändert.</p>
+    <div class="drop" id="iDrop"><svg viewBox="0 0 24 24"><path d="M12 15V4"/><path d="m7 9 5-5 5 5"/><path d="M5 15v4a1 1 0 0 0 1 1h12a1 1 0 0 0 1-1v-4"/></svg>
+      <span><b>Datei hierher ziehen</b> oder <button type="button" class="link" id="iPick">Datei auswählen</button></span>
+      <small>Eingerückte Liste oder Markdown (.txt, .md) · Export aus diesem Tool (.json) · OPML · FreeMind/Freeplane (.mm)</small>
+      <input type="file" id="iFile" accept=".txt,.md,.markdown,.json,.opml,.mm,.xml,text/plain,text/markdown,application/json" hidden></div>
+    <label class="field">Oder Text einfügen<textarea id="iText" spellcheck="false" placeholder="Projekt Phoenix&#10;  - Ziele&#10;    - Mehr Kunden gewinnen&#10;  - Team&#10;  - Budget"></textarea></label>
+    <p class="ipre" id="iPre" aria-live="polite"></p>
+    <details class="aip" id="iAi"><summary>Mindmap aus einem anderen Programm? <small>Mit KI umwandeln</small></summary>
+      <ol><li>Prompt kopieren und in ChatGPT, Claude oder eine andere KI einfügen.</li><li>Deine Mindmap mitschicken: als Bild, Datei (z. B. XMind, MindManager, Miro) oder Text.</li><li>Die Antwort der KI oben ins Textfeld einfügen und importieren.</li></ol>
+      <pre id="iPrompt"></pre><button type="button" class="btn sm" id="iCopy">Prompt kopieren</button></details>
+    <div class="mbtns"><button class="btn" data-close>Abbrechen</button><button class="btn primary" id="iGo" disabled>Importieren</button></div>`,box=>{
+    const ta=box.querySelector('#iText'),pre=box.querySelector('#iPre'),go=box.querySelector('#iGo'),drop=box.querySelector('#iDrop');
+    box.querySelector('#iPrompt').textContent=AI_PROMPT;
+    const check=()=>{
+      const v=ta.value;parsed=null;pre.className='ipre';
+      if(!v.trim()){pre.textContent='';go.disabled=true;return}
+      try{
+        parsed=parseAny(v);
+        if(parsed.backup){const n=parsed.backup.length;pre.textContent=n?`Sicherung mit ${n} Mindmap${n===1?'':'s'} erkannt.`:'Die Sicherung ist leer.';if(!n)parsed=null}
+        else{const t=parsed.trees[0],c=countDesc(t);pre.textContent=parsed.trees.length>1?`${parsed.trees.length} Mindmaps erkannt.`:`Erkannt: «${t.text||'Unbenannt'}» mit ${c} Punkt${c===1?'':'en'}.`}
+        if(parsed&&!parsed.backup&&parsed.trees.length===1&&!parsed.trees[0].children.length){pre.textContent='Nur ein einzelner Punkt erkannt. Unterpunkte müssen eingerückt sein. Für andere Formate hilft der KI-Prompt unten.';pre.classList.add('bad');box.querySelector('#iAi').open=true}
+        else if(parsed)pre.classList.add('ok');
+      }catch{pre.textContent='Daraus kann ich keine Mindmap lesen. Lass sie am besten mit dem KI-Prompt unten umwandeln.';pre.classList.add('bad');box.querySelector('#iAi').open=true}
+      go.disabled=!parsed;
+    };
+    let cT=0;ta.addEventListener('input',()=>{clearTimeout(cT);cT=setTimeout(check,200)});
+    ta.addEventListener('keydown',e=>{if(e.key==='Tab'){e.preventDefault();document.execCommand('insertText',false,'  ')}});
+    const readFile=f=>{if(!f)return;if(f.size>5e6){pre.className='ipre bad';pre.textContent='Die Datei ist zu gross (max. 5 MB).';return}
+      if(/\.(xmind|mmap|zip|pdf|png|jpe?g|docx?)$/i.test(f.name)){pre.className='ipre bad';pre.textContent=`${f.name} kann ich nicht direkt lesen. Lass die Datei mit dem KI-Prompt unten umwandeln.`;box.querySelector('#iAi').open=true;return}
+      const r=new FileReader();r.onload=()=>{ta.value=r.result;check()};r.readAsText(f)};
+    box.querySelector('#iPick').onclick=()=>box.querySelector('#iFile').click();
+    box.querySelector('#iFile').onchange=e=>readFile(e.target.files[0]);
+    drop.addEventListener('dragover',e=>{e.preventDefault();drop.classList.add('over')});
+    drop.addEventListener('dragleave',()=>drop.classList.remove('over'));
+    drop.addEventListener('drop',e=>{e.preventDefault();drop.classList.remove('over');readFile(e.dataTransfer.files[0])});
+    box.querySelector('#iCopy').onclick=e=>{const b=e.currentTarget;
+      const ok=()=>{b.textContent='✓ Kopiert';setTimeout(()=>b.textContent='Prompt kopieren',1800)};
+      (navigator.clipboard?.writeText?navigator.clipboard.writeText(AI_PROMPT):Promise.reject()).then(ok).catch(()=>{const r=document.createRange();r.selectNodeContents(box.querySelector('#iPrompt'));const sel=getSelection();sel.removeAllRanges();sel.addRange(r);toast('Text markiert. Mit Ctrl+C kopieren.')})};
+    go.onclick=async()=>{
+      if(!parsed)return;go.disabled=true;
+      if(parsed.backup){try{const n=await uploadMaps(parsed.backup);closeModal();toast(n?`${n} Mindmap${n===1?'':'s'} importiert`:'Alles war schon vorhanden','Anzeigen',openDrawer)}catch(x){go.disabled=false;toast(x.message)}return}
+      const trees=parsed.trees.map(t=>cleanTree(t));
+      closeModal();
+      if(editingId)finishEdit(true);
+      if(dirty)await storeNow();
+      for(let i=trees.length-1;i>=0;i--){currentId=uid();tree=trees[i];dirty=true;if(i>0)await storeNow()}
+      remember(currentId);showMap(false);await storeNow();
+      toast(trees.length>1?`${trees.length} Mindmaps importiert`:`«${tree.text||'Mindmap'}» importiert`);
+    };
+    setTimeout(()=>ta.focus(),30);
+  },{wide:true});
 }
 const ACT={
   new(){newMap()},
@@ -1163,17 +1307,8 @@ const ACT={
   password(){changePassword(false)},
   admin(){showAdmin()},
   logout(){logout()},
-  import(){modal(`<h2>Aus Liste erstellen</h2><p>Füge eine eingerückte Liste ein, eine Zeile pro Punkt. Einrückung mit Leerzeichen oder Tab bestimmt die Ebene. Die bestehende Mindmap wird ersetzt.</p><textarea id="mList" spellcheck="false" placeholder="Projekt&#10;  Ziele&#10;    Mehr Kunden&#10;    Weniger Aufwand&#10;  Team&#10;  Budget"></textarea><div class="mbtns"><button class="btn" data-close>Abbrechen</button><button class="btn primary" id="mImp">Mindmap erstellen</button></div>`,
-    box=>{const ta=box.querySelector('#mList');
-      ta.addEventListener('keydown',e=>{if(e.key==='Tab'){e.preventDefault();document.execCommand('insertText',false,'  ')}});
-      box.querySelector('#mImp').onclick=()=>{const v=ta.value.trim();if(!v){ta.focus();return}
-        closeModal();mutate(()=>{tree=cleanTree(parseList(v));selectedId=tree.id});setTimeout(()=>fit(1),DUR+20)}})},
-  copy(){const text=outline();
-    const p=navigator.clipboard?.writeText?navigator.clipboard.writeText(text):Promise.reject();
-    p.then(()=>toast('Als Liste in die Zwischenablage kopiert'))
-     .catch(()=>modal(`<h2>Mindmap als Liste</h2><p>Text markieren und kopieren.</p><textarea readonly id="mOut"></textarea><div class="mbtns"><button class="btn primary" data-close>Fertig</button></div>`,
-        box=>{const t=box.querySelector('#mOut');t.value=text;setTimeout(()=>t.select(),30)}))},
-  png(){exportPng()},
+  import(){showImport()},
+  export(){showExport()},
   expand(){mutate(()=>byId.forEach(n=>{delete n.collapsed}),{undoable:false});setTimeout(()=>fit(1),DUR+20)},
   help(){showHelp()}
 };
@@ -1187,7 +1322,7 @@ function showHelp(){
     ${r('<kbd>Leertaste</kbd>','Ein- und ausklappen')}
     ${r('<kbd>←</kbd><kbd>→</kbd><kbd>↑</kbd><kbd>↓</kbd>','Zwischen Punkten wechseln')}
     ${r('<kbd>Ctrl</kbd><kbd>Z</kbd>','Rückgängig')}
-    ${r('<kbd>Ctrl</kbd><kbd>S</kbd>','Als Datei speichern')}
+    ${r('<kbd>Ctrl</kbd><kbd>S</kbd>','Speichern')}
     ${r('Doppelklick Fläche','Neuen Hauptast anlegen')}
     ${r('Ziehen','Punkt auf einen anderen ziehen: wird Unterpunkt. Oben oder unten an den Rand ziehen: Reihenfolge ändern.')}
     ${r('Mausrad · Ziehen der Fläche','Zoomen und verschieben')}
@@ -1201,35 +1336,96 @@ function wrapLines(ctx,text,maxW){
   words.forEach(w=>{const t=cur?cur+' '+w:w;if(ctx.measureText(t).width<=maxW)cur=t;else{if(cur)lines.push(cur);cur=ctx.measureText(w).width>maxW?push(w):w}});
   if(cur)lines.push(cur);return lines.length?lines:[''];
 }
-function exportPng(){
+function drawCanvas({all=true,light=true}={}){
+  const html=document.documentElement,prevTheme=html.getAttribute('data-theme');
+  if(light)html.setAttribute('data-theme','light');
+  const needOpen=all&&[...byId.values()].some(n=>n.collapsed&&n.children.length);
+  if(needOpen){forceOpen=true;render(null,true)}
+  try{
+    const list=visible.filter(n=>els.get(n.id)&&!els.get(n.id).gone);
+    let x1=Infinity,y1=Infinity,x2=-Infinity,y2=-Infinity;
+    list.forEach(n=>{const m=M(n),f=n.collapsed&&!forceOpen&&n.children.length?34:0;x1=Math.min(x1,m.x-14-(m.side==='l'?f:0));x2=Math.max(x2,m.x+m.w+14+(m.side==='l'?0:f));y1=Math.min(y1,m.cy-m.h/2);y2=Math.max(y2,m.cy+m.h/2)});
+    const pad=48,W=x2-x1+pad*2,H=y2-y1+pad*2;
+    let s=2;while(W*s*H*s>16e6&&s>.25)s-=.25;
+    const cv=document.createElement('canvas');cv.width=Math.ceil(W*s);cv.height=Math.ceil(H*s);cv.cssW=W;cv.cssH=H;
+    const ctx=cv.getContext('2d');if(!ctx)return null;
+    ctx.scale(s,s);ctx.translate(pad-x1,pad-y1);
+    ctx.fillStyle=getComputedStyle(document.body).backgroundColor;ctx.fillRect(x1-pad,y1-pad,W,H);
+    paths.forEach((p,id)=>{const c=els.get(id);if(!c||c.gone)return;const cs=getComputedStyle(p);
+      ctx.strokeStyle=cs.stroke;ctx.lineWidth=parseFloat(cs.strokeWidth);ctx.lineCap='round';ctx.stroke(new Path2D(p.getAttribute('d')))});
+    list.forEach(n=>{
+      const en=els.get(n.id),m=M(n),cs=getComputedStyle(en.el);
+      const x=m.x,y=m.cy-m.h/2,w=m.w,h=m.h,rad=parseFloat(cs.borderTopLeftRadius)||8,bw=parseFloat(cs.borderTopWidth)||0;
+      ctx.beginPath();ctx.roundRect(x+bw/2,y+bw/2,w-bw,h-bw,rad);ctx.fillStyle=cs.backgroundColor;ctx.fill();
+      if(bw){ctx.lineWidth=bw;ctx.strokeStyle=cs.borderTopColor;ctx.stroke()}
+      ctx.font=`${cs.fontWeight} ${cs.fontSize} ${cs.fontFamily}`;ctx.fillStyle=cs.color;ctx.textBaseline='middle';
+      const pl=parseFloat(cs.paddingLeft),pr=parseFloat(cs.paddingRight),pt=parseFloat(cs.paddingTop),lh=parseFloat(cs.lineHeight)||parseFloat(cs.fontSize)*1.35;
+      const lines=wrapLines(ctx,n.text,w-pl-pr-bw*2+1),center=cs.textAlign==='center';
+      ctx.textAlign=center?'center':'left';
+      lines.forEach((ln,i)=>ctx.fillText(ln,center?x+w/2:x+pl+bw,y+bw+pt+lh*i+lh/2));
+      if(n.collapsed&&!forceOpen&&n.children.length&&m.depth>0){const tg=getComputedStyle(en.el.children[1]);const cx=m.side==='l'?x-6:x+w+6,cnt=String(countDesc(n));
+        ctx.font=`700 11px ${cs.fontFamily}`;const tw=Math.max(22,ctx.measureText(cnt).width+10);
+        ctx.beginPath();ctx.roundRect(m.side==='l'?cx-tw:cx,m.cy-11,tw,22,11);ctx.fillStyle=tg.backgroundColor;ctx.fill();
+        ctx.fillStyle=tg.color;ctx.textAlign='center';ctx.fillText(cnt,m.side==='l'?cx-tw/2:cx+tw/2,m.cy+.5)}
+    });
+    return cv;
+  }finally{
+    if(needOpen){forceOpen=false;render(null,true)}
+    if(light){prevTheme==null?html.removeAttribute('data-theme'):html.setAttribute('data-theme',prevTheme)}
+  }
+}
+const canvasBlob=(cv,type,q)=>new Promise(r=>cv.toBlob(r,type,q));
+async function makePdf(cv){
+  const jpg=new Uint8Array(await (await canvasBlob(cv,'image/jpeg',.92)).arrayBuffer());
+  let pw=cv.cssW*.75,ph=cv.cssH*.75;const f=Math.min(1,14000/Math.max(pw,ph));pw*=f;ph*=f;
+  pw=pw.toFixed(2);ph=ph.toFixed(2);
+  const enc=new TextEncoder(),parts=[],off=[];let len=0;
+  const add=x=>{const u=typeof x==='string'?enc.encode(x):x;parts.push(u);len+=u.length};
+  const content=`q ${pw} 0 0 ${ph} 0 0 cm /Im0 Do Q`;
+  add('%PDF-1.4\n%âãÏÓ\n');
+  off[1]=len;add('1 0 obj\n<< /Type /Catalog /Pages 2 0 R >>\nendobj\n');
+  off[2]=len;add('2 0 obj\n<< /Type /Pages /Kids [3 0 R] /Count 1 >>\nendobj\n');
+  off[3]=len;add(`3 0 obj\n<< /Type /Page /Parent 2 0 R /MediaBox [0 0 ${pw} ${ph}] /Resources << /XObject << /Im0 4 0 R >> >> /Contents 5 0 R >>\nendobj\n`);
+  off[4]=len;add(`4 0 obj\n<< /Type /XObject /Subtype /Image /Width ${cv.width} /Height ${cv.height} /ColorSpace /DeviceRGB /BitsPerComponent 8 /Filter /DCTDecode /Length ${jpg.length} >>\nstream\n`);add(jpg);add('\nendstream\nendobj\n');
+  off[5]=len;add(`5 0 obj\n<< /Length ${content.length} >>\nstream\n${content}\nendstream\nendobj\n`);
+  const xref=len;
+  add(`xref\n0 6\n0000000000 65535 f \n${[1,2,3,4,5].map(i=>String(off[i]).padStart(10,'0')+' 00000 n \n').join('')}trailer\n<< /Size 6 /Root 1 0 R >>\nstartxref\n${xref}\n%%EOF\n`);
+  return new Blob(parts,{type:'application/pdf'});
+}
+const FORMATS=[['pdf','PDF','Zum Drucken und Teilen'],['png','PNG','Bild in bester Qualität'],['jpg','JPG','Kleinere Bilddatei'],['txt','Text','Eingerückte Liste'],['json','JSON','Zum späteren Import']];
+async function exportAs(fmt,opt){
   if(editingId)finishEdit(true);
-  const list=visible.filter(n=>els.get(n.id)&&!els.get(n.id).gone);
-  let x1=Infinity,y1=Infinity,x2=-Infinity,y2=-Infinity;
-  list.forEach(n=>{const m=M(n);x1=Math.min(x1,m.x-14);x2=Math.max(x2,m.x+m.w+14+(n.collapsed?30:0));y1=Math.min(y1,m.cy-m.h/2);y2=Math.max(y2,m.cy+m.h/2)});
-  const pad=48,W=x2-x1+pad*2,H=y2-y1+pad*2;
-  let s=2;while(W*s*H*s>60e6&&s>.5)s-=.25;
-  const cv=document.createElement('canvas');cv.width=Math.ceil(W*s);cv.height=Math.ceil(H*s);
-  const ctx=cv.getContext('2d');ctx.scale(s,s);ctx.translate(pad-x1,pad-y1);
-  const root=getComputedStyle(document.body);
-  ctx.fillStyle=root.backgroundColor;ctx.fillRect(x1-pad,y1-pad,W,H);
-  paths.forEach((p,id)=>{const c=els.get(id);if(!c||c.gone)return;const cs=getComputedStyle(p);
-    ctx.strokeStyle=cs.stroke;ctx.lineWidth=parseFloat(cs.strokeWidth);ctx.lineCap='round';ctx.stroke(new Path2D(p.getAttribute('d')))});
-  list.forEach(n=>{
-    const en=els.get(n.id),m=M(n),cs=getComputedStyle(en.el);
-    const x=m.x,y=m.cy-m.h/2,w=m.w,h=m.h,rad=parseFloat(cs.borderTopLeftRadius)||8,bw=parseFloat(cs.borderTopWidth)||0;
-    ctx.beginPath();ctx.roundRect(x+bw/2,y+bw/2,w-bw,h-bw,rad);ctx.fillStyle=cs.backgroundColor;ctx.fill();
-    if(bw){ctx.lineWidth=bw;ctx.strokeStyle=cs.borderTopColor;ctx.stroke()}
-    ctx.font=`${cs.fontWeight} ${cs.fontSize} ${cs.fontFamily}`;ctx.fillStyle=cs.color;ctx.textBaseline='middle';
-    const pl=parseFloat(cs.paddingLeft),pr=parseFloat(cs.paddingRight),pt=parseFloat(cs.paddingTop),lh=parseFloat(cs.lineHeight)||parseFloat(cs.fontSize)*1.35;
-    const lines=wrapLines(ctx,n.text,w-pl-pr-bw*2+1),center=cs.textAlign==='center';
-    ctx.textAlign=center?'center':'left';
-    lines.forEach((ln,i)=>ctx.fillText(ln,center?x+w/2:x+pl+bw,y+bw+pt+lh*i+lh/2));
-    if(n.collapsed&&n.children.length&&m.depth>0){const tg=getComputedStyle(en.el.children[1]);const cx=m.side==='l'?x-6:x+w+6,cnt=String(countDesc(n));
-      ctx.font=`700 11px ${cs.fontFamily}`;const tw=Math.max(22,ctx.measureText(cnt).width+10);
-      ctx.beginPath();ctx.roundRect(m.side==='l'?cx-tw:cx,m.cy-11,tw,22,11);ctx.fillStyle=tg.backgroundColor;ctx.fill();
-      ctx.fillStyle=tg.color;ctx.textAlign='center';ctx.fillText(cnt,m.side==='l'?cx-tw/2:cx+tw/2,m.cy+.5)}
-  });
-  cv.toBlob(b=>{if(b){download(slug(tree.text)+'.png',b);toast('Bild gespeichert')}else toast('Das Bild ist zu gross. Klappe ein paar Äste ein und versuche es nochmal.')},'image/png');
+  const name=slug(tree.text);
+  if(fmt==='txt'){download(name+'.txt',new Blob([outline()+'\n'],{type:'text/plain;charset=utf-8'}));toast('Text-Datei gespeichert');return}
+  if(fmt==='json'){download(name+'.mindmap.json',new Blob([JSON.stringify({app:'mindmap',version:1,tree},null,1)],{type:'application/json'}));toast('JSON-Datei gespeichert');return}
+  const cv=drawCanvas(opt);
+  if(!cv){toast('Das Bild konnte nicht erstellt werden.');return}
+  let blob;
+  if(fmt==='pdf')blob=await makePdf(cv);
+  else blob=await canvasBlob(cv,fmt==='jpg'?'image/jpeg':'image/png',.92);
+  if(!blob){toast('Die Mindmap ist zu gross für ein Bild. Klappe ein paar Äste ein und versuche es nochmal.');return}
+  download(`${name}.${fmt}`,blob);toast(`${fmt.toUpperCase()} gespeichert`);
+}
+function showExport(){
+  let last='pdf';try{last=localStorage.getItem('mindmap:exportFmt')||'pdf'}catch{}
+  const folded=[...byId.values()].some(n=>n.collapsed&&n.children.length);
+  modal(`<h2>Exportieren</h2><p>Die aktuelle Mindmap herunterladen als:</p>
+    <div class="fmt" role="radiogroup" aria-label="Format">${FORMATS.map(([k,l,d])=>`<label><input type="radio" name="efmt" value="${k}"${k===last?' checked':''}><b>${l}</b><span>${d}</span></label>`).join('')}</div>
+    <div id="eOpts">
+      ${folded?'<label class="chk"><input type="checkbox" id="eAll" checked>Eingeklappte Äste mitnehmen</label>':''}
+      <label class="chk"><input type="checkbox" id="eLight" checked>Heller Hintergrund (auch im Dunkelmodus)</label>
+    </div>
+    <div class="mbtns"><button class="btn" id="eCopy" hidden>Text kopieren</button><button class="btn" data-close>Abbrechen</button><button class="btn primary" id="eGo">Herunterladen</button></div>`,box=>{
+    const sel=()=>box.querySelector('input[name=efmt]:checked').value;
+    const upd=()=>{const f=sel(),img=['pdf','png','jpg'].includes(f);box.querySelector('#eOpts').hidden=!img;box.querySelector('#eCopy').hidden=f!=='txt'};
+    box.querySelectorAll('input[name=efmt]').forEach(r=>r.onchange=upd);upd();
+    box.querySelector('#eCopy').onclick=()=>{const text=outline();(navigator.clipboard?.writeText?navigator.clipboard.writeText(text):Promise.reject()).then(()=>{closeModal();toast('Text in die Zwischenablage kopiert')}).catch(()=>toast('Kopieren nicht möglich. Lade die Text-Datei herunter.'))};
+    box.querySelector('#eGo').onclick=async()=>{
+      const f=sel();try{localStorage.setItem('mindmap:exportFmt',f)}catch{}
+      const opt={all:box.querySelector('#eAll')?.checked!==false,light:box.querySelector('#eLight').checked};
+      closeModal();await exportAs(f,opt);
+    };
+  },{wide:true});
 }
 
 /* ============ Start ============ */

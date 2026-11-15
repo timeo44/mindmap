@@ -7,7 +7,9 @@ Einfacher Mindmap-Editor im Browser mit Benutzerkonten. Jede Person meldet sich 
 - Punkte per Drag & Drop umhängen, Äste einfärben, ein- und ausklappen
 - **Meine Mindmaps:** beliebig viele Mindmaps pro Konto, automatisch gespeichert
 - **Benutzer verwalten** (Admins): Konten anlegen, Passwörter setzen, Admin-Rechte vergeben, Konten löschen
-- Export als PNG-Bild, als eingerückte Liste und als Sicherung (JSON); Import aus Liste oder Sicherung
+- **Export** als PDF, PNG, JPG, Text (eingerückte Liste) oder JSON – auf Wunsch mit eingeklappten Ästen und hellem Hintergrund
+- **Import** aus Datei oder eingefügtem Text: eingerückte Liste, Markdown, JSON-Export/Sicherung, OPML, FreeMind/Freeplane (.mm), Mermaid-Mindmap
+- Für alle anderen Programme (XMind, MindManager, Miro, Bilder …) gibt es im Import-Dialog einen KI-Prompt, der die Mindmap ins passende Format umwandelt
 
 ## Aufbau
 - `public/index.html` – die ganze Oberfläche (eine Datei, ohne Build)
