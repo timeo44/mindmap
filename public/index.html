@@ -323,6 +323,11 @@ kbd{font:600 10.5px/1 var(--font);padding:3px 5px;border-radius:5px;border:1px s
 .actions .catbtn.on{border-style:solid;border-color:var(--c);color:var(--ink)}
 .actions .catbtn i{width:9px;height:9px;border-radius:50%;background:var(--c);display:inline-block}
 .actions .catbtn.none i{background:transparent;box-shadow:inset 0 0 0 1.5px var(--muted)}
+.disc{display:flex;gap:14px;align-items:flex-start;margin-bottom:12px}
+.disc svg{width:30px;height:30px;flex:none;stroke:var(--warn);fill:color-mix(in oklab,var(--warn) 14%,transparent);stroke-width:1.8;stroke-linejoin:round;stroke-linecap:round;margin-top:2px}
+.disc h2{margin:0 0 4px}
+.mbox .disc-main{margin:0;color:var(--ink);font-weight:650;font-size:15px;line-height:1.45}
+.lwarn{font-size:12.5px;color:var(--ink)!important;background:color-mix(in oklab,var(--warn) 12%,var(--surface));border:1px solid color-mix(in oklab,var(--warn) 35%,transparent);border-radius:9px;padding:8px 10px}
 #measure{position:absolute;left:-20000px;top:0;width:4000px;height:10px;visibility:hidden;pointer-events:none}
 #nodes{position:absolute;left:0;top:0;width:4000px}
 
@@ -388,7 +393,7 @@ kbd{font:600 10.5px/1 var(--font);padding:3px 5px;border-radius:5px;border:1px s
       <ul>
         <li><b>Tippen</b>Punkt auswählen und lostippen, um ihn zu beschriften</li>
         <li><b>Tab oder ＋</b>Unterpunkt anlegen</li>
-        <li><b>Enter</b>Punkt auf gleicher Ebene anlegen</li>
+        <li><b>Enter</b>Neuer Punkt auf gleicher Ebene, auch direkt nach dem Tippen</li>
         <li><b>Doppelklick</b>Text ändern</li>
         <li><b>Ziehen</b>Punkt auf einen anderen ziehen, um ihn umzuhängen</li>
       </ul>
@@ -438,7 +443,8 @@ kbd{font:600 10.5px/1 var(--font);padding:3px 5px;border-radius:5px;border:1px s
     <label class="field">Passwort<input id="lp" name="password" type="password" autocomplete="current-password" required></label>
     <p class="lerr" id="lerr" role="alert" hidden></p>
     <button class="btn primary" id="lbtn" type="submit">Anmelden</button>
-    <p class="lnote">Noch kein Zugang? Dein Administrator legt dir ein Konto an.</p>
+    <p class="lwarn">Bitte keine persönlichen oder sensiblen Kundendaten eingeben.</p>
+    <p class="lnote">Noch kein Zugang? Dein Administrator legt dir ein Konto an. Beim ersten Anmelden legst du ein eigenes Passwort fest.</p>
   </form>
 </div>
 <div class="modal" id="modal" hidden><div class="mbox" id="mbox" role="dialog" aria-modal="true"></div></div>
@@ -953,8 +959,19 @@ function updateUserUi(){
   $('#whoName').textContent=u.name||u.kuerzel;$('#whoK').textContent=`Kürzel: ${u.kuerzel}${u.role==='admin'?' · Admin':''}`;
   $('#adminItem').hidden=u.role!=='admin';
 }
+function showDisclaimer(){
+  return new Promise(done=>modal(`<div class="disc"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M12 3 2.5 20h19z"/><path d="M12 10v4.5M12 17.5h.01"/></svg><div><h2>Wichtiger Hinweis zum Datenschutz</h2>
+    <p class="disc-main">Gib hier keine persönlichen oder sensiblen Kundendaten ein.</p></div></div>
+    <p>Dazu gehören zum Beispiel Namen, Adressen, Geburtsdaten, Kunden-, Konto- oder Vertragsnummern sowie Angaben zu Vermögen, Gesundheit oder Verträgen von Kundinnen und Kunden.</p>
+    <p>Verwende stattdessen neutrale Begriffe, Abkürzungen oder Platzhalter, zum Beispiel «Kunde A».</p>
+    <div class="mbtns"><button class="btn primary" id="discOk">Verstanden</button></div>`,box=>{
+      box.querySelector('#discOk').onclick=()=>{closeModal(true);done()};
+    },{locked:true}));
+}
 async function enterApp(){
   $('#login').hidden=true;updateUserUi();setStatus('Lädt …','busy');
+  await showDisclaimer();
+  if(me().mustChange)await new Promise(res=>changePassword(true,res));
   try{mapsMeta=(await api('/maps')).maps}catch(e){if(e.status!==401){setStatus('Laden fehlgeschlagen','warn');toast(e.message,'Nochmal',enterApp)}return}
   let draft=null;try{draft=JSON.parse(localStorage.getItem(draftKey())||'null')}catch{}
   if(draft?.id&&draft.tree){
@@ -963,8 +980,8 @@ async function enterApp(){
   let last=null;try{last=localStorage.getItem('mindmap:last:'+me().kuerzel)}catch{}
   const target=mapsMeta.find(m=>m.id===last)||mapsMeta[0];
   if(!(target&&await openMap(target.id)))await newMap(false);
-  booted=true;
-  if(me().mustChange)changePassword(true);else offerMigration();
+  booted=true;vp.style.visibility='';
+  offerMigration();
 }
 async function boot(){
   if(!session?.token){showLogin();return}
@@ -986,8 +1003,8 @@ async function logout(){
   if(dirty)await storeNow();
   setSession(null);location.reload();
 }
-function changePassword(force){
-  modal(`<h2>${force?'Neues Passwort festlegen':'Passwort ändern'}</h2><p>${force?'Du meldest dich zum ersten Mal an. Lege jetzt dein eigenes Passwort fest.':'Mindestens 8 Zeichen.'}</p>
+function changePassword(force,done){
+  modal(`<h2>${force?'Neues Passwort festlegen':'Passwort ändern'}</h2><p>${force?'Du meldest dich zum ersten Mal mit diesem Passwort an. Lege jetzt dein eigenes Passwort fest (mindestens 8 Zeichen). Als bisheriges Passwort gibst du das Startpasswort ein, das du erhalten hast.':'Mindestens 8 Zeichen.'}</p>
     <form id="pwForm" novalidate>
       <label class="field">Bisheriges Passwort<input type="password" id="pOld" autocomplete="current-password"></label>
       <label class="field">Neues Passwort<input type="password" id="pNew" autocomplete="new-password" minlength="8"></label>
@@ -1001,7 +1018,7 @@ function changePassword(force){
       const show=t=>{er.hidden=false;er.textContent=t};
       if(n.length<8)return show('Das neue Passwort braucht mindestens 8 Zeichen.');
       if(n!==n2)return show('Die beiden neuen Passwörter stimmen nicht überein.');
-      try{const d=await api('/password',{method:'POST',body:{oldPassword:o,newPassword:n}});setSession({token:d.token,user:d.user});updateUserUi();closeModal(true);toast('Passwort geändert');if(force)offerMigration()}
+      try{const d=await api('/password',{method:'POST',body:{oldPassword:o,newPassword:n}});setSession({token:d.token,user:d.user});updateUserUi();closeModal(true);toast('Passwort geändert');done?.()}
       catch(x){if(x.status!==401)show(x.message)}
     };
   },{locked:force});
@@ -1038,7 +1055,7 @@ async function showAdmin(note){
 }
 function createdNote(title,k,pw){
   const d=document.createElement('div');d.className='created';
-  d.innerHTML='<b></b><br>Kürzel: <code></code> · Passwort: <code></code><br><span style="color:var(--muted)">Notiere das Passwort jetzt. Es wird nicht mehr angezeigt.</span>';
+  d.innerHTML='<b></b><br>Kürzel: <code></code> · Passwort: <code></code><br><span style="color:var(--muted)">Notiere das Passwort jetzt, es wird nicht mehr angezeigt. Beim ersten Anmelden legt die Person ein eigenes Passwort fest.</span>';
   d.querySelector('b').textContent=title;const c=d.querySelectorAll('code');c[0].textContent=k;c[1].textContent=pw;return d;
 }
 async function loadUsers(box){
@@ -1180,8 +1197,8 @@ layer.addEventListener('keydown',e=>{
   if(!editingId||!e.target.classList.contains('lbl'))return;
   e.stopPropagation();
   if(e.isComposing)return;
-  if(e.key==='Enter'){e.preventDefault();const id=editingId,isNew=editState.isNew;finishEdit(true);
-    if(!e.shiftKey&&isNew&&byId.has(id)&&M(byId.get(id)).depth>0){addSibling(id)} }
+  if(e.key==='Enter'){e.preventDefault();const id=editingId;finishEdit(true);
+    if(!e.shiftKey&&byId.has(id))addSibling(id)}
   else if(e.key==='Tab'){e.preventDefault();const id=editingId;finishEdit(true);if(byId.has(id))addChild(id)}
   else if(e.key==='Escape'){e.preventDefault();finishEdit(editState.isNew)}
 });
@@ -1551,7 +1568,7 @@ function showHelp(){
   const r=(k,t)=>`<span>${k}</span><span>${t}</span>`;
   modal(`<h2>Tastenkürzel</h2><p>Zuerst einen Punkt anklicken, dann:</p><div class="keys">
     ${r('<kbd>Tab</kbd>','Unterpunkt anlegen')}
-    ${r('<kbd>Enter</kbd>','Punkt auf gleicher Ebene anlegen')}
+    ${r('<kbd>Enter</kbd>','Neuer Punkt auf gleicher Ebene, auch direkt nach dem Tippen. Nur bestätigen ohne neuen Punkt: Klick daneben oder Esc.')}
     ${r('Lostippen · <kbd>F2</kbd>','Text ändern')}
     ${r('<kbd>Entf</kbd>','Punkt löschen')}
     ${r('<kbd>Leertaste</kbd>','Ein- und ausklappen')}
@@ -1693,6 +1710,7 @@ $('#hintClose').onclick=()=>{$('#hint').hidden=true;try{localStorage.setItem('mi
 $('#hintHelp').onclick=showHelp;
 let rT=0;addEventListener('resize',()=>{clearTimeout(rT);rT=setTimeout(()=>{if(tree.children.length)ensureVisible(selectedId||tree.id);else fit(1,true)},150)});
 
+vp.style.visibility='hidden';
 tree=blank();reindex();boot();
 if(document.fonts)document.fonts.ready.then(()=>{mcache.clear();render(null,true)});
 </script>

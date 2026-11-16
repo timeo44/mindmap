@@ -138,6 +138,8 @@ export default async (req) => {
     const k = u.kuerzel;
 
     if (parts[0] === "me" && m === "GET") return json(pub(u));
+    // Wer ein Startpasswort hat, muss zuerst ein eigenes festlegen.
+    if (u.mustChange && !(parts[0] === "password" && m === "POST")) return json({ error: "Bitte lege zuerst ein eigenes Passwort fest.", mustChange: true }, 403);
 
     if (parts[0] === "password" && m === "POST") {
       const { oldPassword, newPassword } = await body(req);
@@ -195,7 +197,7 @@ export default async (req) => {
         if (!validK(nk)) return fail("Das Kürzel braucht 2–24 Zeichen: Buchstaben, Zahlen, Punkt, Bindestrich oder Unterstrich.");
         const p = pwProblem(password);
         if (p) return fail(p);
-        const rec = { kuerzel: nk, name: String(name || "").trim().slice(0, 80), role: role === "admin" ? "admin" : "user", ...hashPw(password), mustChange: false, tv: 0, created: Date.now() };
+        const rec = { kuerzel: nk, name: String(name || "").trim().slice(0, 80), role: role === "admin" ? "admin" : "user", ...hashPw(password), mustChange: true, tv: 0, created: Date.now() };
         if (await s.get(`users/${nk}`, { type: "json" })) return fail(`Das Kürzel «${nk}» ist schon vergeben.`, 409);
         await s.setJSON(`users/${nk}`, rec);
         return json({ user: pub(rec) }, 201);
@@ -209,7 +211,7 @@ export default async (req) => {
           if (b.password !== undefined) {
             const p = pwProblem(b.password);
             if (p) return fail(p);
-            Object.assign(nu, hashPw(b.password), { tv: (t.tv || 0) + 1, mustChange: false });
+            Object.assign(nu, hashPw(b.password), { tv: (t.tv || 0) + 1, mustChange: target !== k });
           }
           if (b.name !== undefined) nu.name = String(b.name || "").trim().slice(0, 80);
           if (b.role !== undefined) {
