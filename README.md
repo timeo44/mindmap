@@ -4,8 +4,8 @@ Einfacher Mindmap-Editor im Browser mit Benutzerkonten. Jede Person meldet sich 
 
 ## Funktionen
 - Punkt anklicken und lostippen, **Tab** = Unterpunkt, **Enter** = gleiche Ebene
-- Punkte per Drag & Drop umhängen, Äste einfärben, ein- und ausklappen
-- **Kategorien:** pro Mindmap eigene Kategorien mit Farbe anlegen und Punkten zuweisen
+- Punkte per Drag & Drop umhängen, ein- und ausklappen
+- **Kategorien:** pro Mindmap eigene Kategorien mit Farbe anlegen und Punkten mit einem Klick in der Leiste zuweisen – Farben gibt es nur über Kategorien
 - **Duplikate finden:** zeigt Begriffe, die mehrfach vorkommen, markiert sie und springt zu jedem Vorkommen
 - **Meine Mindmaps:** beliebig viele Mindmaps pro Konto, automatisch gespeichert
 - **Benutzer verwalten** (Admins): Konten anlegen, Passwörter setzen, Admin-Rechte vergeben, Konten löschen

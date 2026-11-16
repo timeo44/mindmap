@@ -115,11 +115,6 @@ main{flex:1;position:relative;min-height:0}
 .actions svg{width:16px;height:16px;stroke:currentColor;fill:none;stroke-width:2;stroke-linecap:round;stroke-linejoin:round}
 .actions .danger{color:var(--danger)}
 .actions .sep{width:1px;height:22px;background:var(--line);margin:0 3px;flex:none}
-.actions .sw{display:flex;gap:4px;padding:0 4px;flex:none}
-.actions .swatch{width:22px;height:22px;padding:0;border-radius:50%;background:oklch(.62 .15 var(--h));border:2px solid var(--surface);box-shadow:0 0 0 1px var(--line)}
-.actions .swatch:hover{background:oklch(.62 .15 var(--h));transform:scale(1.12)}
-.actions .swatch.on{box-shadow:0 0 0 2px var(--ink)}
-.actions .swatch.reset{background:var(--bg);color:var(--muted);font-size:12px;display:grid;place-items:center}
 kbd{font:600 10.5px/1 var(--font);padding:3px 5px;border-radius:5px;border:1px solid var(--line);color:var(--muted);background:var(--bg)}
 
 .zoom{position:absolute;right:calc(16px + env(safe-area-inset-right,0px));bottom:calc(16px + env(safe-area-inset-bottom,0px));z-index:4;
@@ -314,6 +309,18 @@ kbd{font:600 10.5px/1 var(--font);padding:3px 5px;border-radius:5px;border:1px s
 .catpop input:focus{border-color:var(--accent)}
 .catpop .btn{height:34px}
 .catpop .link{align-self:flex-start;margin:2px 8px 4px}
+.node.hascat{border-color:var(--cc)}
+.node.dn.hascat{background:color-mix(in srgb,var(--cc) 9%,var(--surface))}
+.node.d1.hascat{background:color-mix(in srgb,var(--cc) 17%,var(--surface))}
+.node.root.hascat{box-shadow:0 0 0 3px var(--bg),0 0 0 5px var(--cc)}
+.node.root.hascat.sel{box-shadow:0 0 0 2px var(--bg),0 0 0 4px var(--accent),0 0 0 7px var(--cc)}
+.actions .cchips{display:flex;align-items:center;gap:5px;flex:none;padding:0 2px}
+.actions .cchip{height:30px;padding:0 11px 0 9px;border-radius:15px;border:1.5px solid color-mix(in srgb,var(--c) 45%,var(--line));font-size:12.5px;font-weight:550;gap:6px}
+.actions .cchip i{width:8px;height:8px;border-radius:50%;background:var(--c)}
+.actions .cchip:hover{background:color-mix(in srgb,var(--c) 10%,var(--surface))}
+.actions .cchip.on{border-color:var(--c);background:color-mix(in srgb,var(--c) 18%,var(--surface));color:color-mix(in srgb,var(--c) 70%,var(--ink));font-weight:700}
+.actions .catbtn{height:30px;padding:0 11px;border-radius:15px;border:1.5px dashed var(--line);color:var(--muted);font-size:12.5px}
+.actions .catbtn.on{border-style:solid;border-color:var(--c);color:var(--ink)}
 .actions .catbtn i{width:9px;height:9px;border-radius:50%;background:var(--c);display:inline-block}
 .actions .catbtn.none i{background:transparent;box-shadow:inset 0 0 0 1.5px var(--muted)}
 #measure{position:absolute;left:-20000px;top:0;width:4000px;height:10px;visibility:hidden;pointer-events:none}
@@ -481,7 +488,7 @@ function reindex(){
   if(!Array.isArray(tree.cats))tree.cats=[];
   catById=new Map(tree.cats.map(c=>[c.id,c]));
   (function w(n,p,d,side,col){
-    if(d===1){side=n.side;col=n.color}else if(d>1&&n.color!=null)col=n.color;
+    if(d===1){side=n.side;col=n.color}
     meta.set(n.id,{parent:p,depth:d,side:d===0?null:side,col,hue:col==null?250:PALETTE[col]});
     byId.set(n.id,n);
     n.children.forEach(c=>w(c,n,d+1,side,col));
@@ -702,6 +709,7 @@ function paint(en,n){
   if(n.id!==editingId){const l=el.firstChild;if(l.textContent!==n.text)l.textContent=n.text}
   el.querySelector('.tog').textContent=n.collapsed?countDesc(n):'−';
   const cat=n.cat&&catById.get(n.cat),tg=el.querySelector('.ctag');
+  el.classList.toggle('hascat',!!cat);if(cat)el.style.setProperty('--cc',cat.color);
   if(cat){tg.hidden=false;tg.style.setProperty('--c',cat.color);if(tg.textContent!==cat.name)tg.textContent=cat.name;tg.title='Kategorie: '+cat.name}else tg.hidden=true;
   el.setAttribute('aria-selected',String(n.id===selectedId));el.setAttribute('aria-level',m.depth+1);
   if(has)el.setAttribute('aria-expanded',String(!n.collapsed));else el.removeAttribute('aria-expanded');
@@ -1114,7 +1122,6 @@ function toggleFold(id){
   if(n.collapsed&&selectedId&&selectedId!==id&&isDesc(byId.get(selectedId),n))selectedId=id;
   render(id);updateActions();persist();
 }
-function setColor(id,c){const n=byId.get(id);if(!n)return;mutate(()=>{if(c==null)delete n.color;else n.color=c})}
 function moveNode(id,targetId,mode,side){
   const n=byId.get(id),t=byId.get(targetId);
   if(!n||!t||n===t||isDesc(t,n)||M(n).depth===0)return;
@@ -1336,28 +1343,29 @@ const IC={
   dupe:'<svg viewBox="0 0 24 24"><rect x="3" y="3" width="12" height="12" rx="2"/><rect x="9" y="9" width="12" height="12" rx="2"/></svg>'
 };
 let actSig='';
+const CHIP_MAX=5;
 function updateActions(){
   const bar=$('#actions'),n=selectedId&&byId.get(selectedId);
   if(!n){bar.hidden=true;actSig='';return}
   if(dupMode)$('#dupList').querySelectorAll('.dgo').forEach(b=>b.classList.toggle('cur',b.dataset.id===selectedId));
   const dg=dupOf.get(n.id);
-  const cat=n.cat&&catById.get(n.cat),m=M(n),root=m.depth===0,sig=[n.id,root,n.children.length>0,n.collapsed,m.col,n.color!=null,m.depth,dg?dg.length:0,cat?cat.id+cat.name+cat.color:'',tree.cats.length].join('|');
+  const cat=n.cat&&catById.get(n.cat),m=M(n),root=m.depth===0,sig=[n.id,root,n.children.length>0,n.collapsed,m.depth,dg?dg.length:0,n.cat||'',JSON.stringify(tree.cats)].join('|');
   bar.hidden=false;if(sig===actSig)return;actSig=sig;closeCatPop();
   bar.innerHTML=`
     <button data-a="child" title="Unterpunkt anlegen">${IC.child}Unterpunkt <kbd>Tab</kbd></button>
     ${root?'':`<button data-a="sib" title="Punkt auf gleicher Ebene anlegen">${IC.sib}Gleiche Ebene <kbd>Enter</kbd></button>`}
     <button data-a="edit" title="Text ändern (Doppelklick)">${IC.edit}Umbenennen</button>
-    ${tree.cats.length||!root?`<button data-a="cat" class="catbtn${n.cat&&catById.get(n.cat)?'':' none'}" style="--c:${catById.get(n.cat)?.color||'transparent'}" title="Kategorie zuweisen" aria-haspopup="menu"><i></i><span class="cl"></span></button>`:''}
     ${dg?`<button data-a="nextdup" title="Zum nächsten gleichen Punkt springen" style="color:var(--warn)">${IC.dupe}Doppelt ${dg.length}×</button>`:''}
     ${!root&&n.children.length?`<button data-a="fold">${n.collapsed?IC.unfold+'Ausklappen':IC.fold+'Einklappen'}</button>`:''}
-    ${root?'':`<span class="sep"></span><span class="sw" role="group" aria-label="Farbe">${PALETTE.map((h,i)=>`<button class="swatch${m.col===i?' on':''}" data-a="color" data-c="${i}" style="--h:${h}" aria-label="Farbe ${i+1}" title="Farbe für diesen Ast"></button>`).join('')}${m.depth>1&&n.color!=null?'<button class="swatch reset" data-a="color" data-c="" title="Farbe vom übergeordneten Punkt übernehmen" aria-label="Farbe zurücksetzen">↺</button>':''}</span>
-    <span class="sep"></span><button data-a="del" class="danger" title="Löschen (Entf)">${IC.del}Löschen</button>`}`;
-  const cl=bar.querySelector('.catbtn .cl');if(cl)cl.textContent=cat?cat.name:'Kategorie';
+    <span class="sep"></span><span class="cchips" role="group" aria-label="Kategorie">${tree.cats.slice(0,CHIP_MAX).map(c=>`<button data-a="setcat" data-id="${c.id}" class="cchip${n.cat===c.id?' on':''}" style="--c:${c.color}" aria-pressed="${n.cat===c.id}"><i></i><span></span></button>`).join('')}<button data-a="cat" class="catbtn" aria-haspopup="menu" title="${tree.cats.length?'Weitere Kategorien und neue anlegen':'Kategorie anlegen und zuweisen'}">${tree.cats.length>CHIP_MAX?'Mehr …':tree.cats.length?'+':'+ Kategorie'}</button></span>
+    ${root?'':`<span class="sep"></span><button data-a="del" class="danger" title="Löschen (Entf)">${IC.del}Löschen</button>`}`;
+  bar.querySelectorAll('.cchip').forEach((b,i)=>{const c=tree.cats[i];b.querySelector('span').textContent=c.name;b.title=n.cat===c.id?`Kategorie «${c.name}» entfernen`:`Kategorie «${c.name}» zuweisen`});
+  if(cat&&tree.cats.findIndex(c=>c.id===cat.id)>=CHIP_MAX){const b=bar.querySelector('.catbtn');b.textContent=cat.name+' …';b.style.setProperty('--c',cat.color);b.classList.add('on')}
 }
 $('#actions').addEventListener('mousedown',e=>{if(e.target.closest('button'))e.preventDefault()});
 $('#actions').addEventListener('click',e=>{
   const b=e.target.closest('button');if(!b||!selectedId)return;
-  if(editingId&&b.dataset.a!=='color'&&b.dataset.a!=='cat')finishEdit(true);
+  if(editingId&&b.dataset.a!=='setcat'&&b.dataset.a!=='cat')finishEdit(true);
   const id=selectedId;
   switch(b.dataset.a){
     case 'child':addChild(id);break;
@@ -1365,7 +1373,7 @@ $('#actions').addEventListener('click',e=>{
     case 'edit':startEdit(id);break;
     case 'fold':toggleFold(id);break;
     case 'del':removeNode(id);break;
-    case 'color':setColor(id,b.dataset.c===''?null:+b.dataset.c);break;
+    case 'setcat':{const nn=byId.get(id);if(!nn)break;const cid=b.dataset.id;mutate(()=>{if(nn.cat===cid)delete nn.cat;else nn.cat=cid});break}
     case 'cat':toggleCatPop();break;
     case 'nextdup':{const g=dupOf.get(id);if(g){const nx=g[(g.findIndex(x=>x.id===id)+1)%g.length];if(!dupMode)openDup();reveal(nx.id)}break}
   }
