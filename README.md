@@ -27,5 +27,8 @@ Auf Netlify: *Add new project → Import an existing project → GitHub → time
 
 GitHub Pages reicht dafür nicht, weil Pages keinen Server für Anmeldung und Speicherung bietet.
 
+## Vorlage ins Konto laden (optional)
+In Netlify die Umgebungsvariable `MINDMAP_SEED` setzen (Mindmap als gzip + base64, Format `["Titel", [Kinder …]]`) und optional `SEED_USER` (Kürzel, Standard `admin`, mehrere mit Komma). Beim nächsten Login erscheint die Mindmap einmalig im Konto. So bleiben interne Inhalte aus dem öffentlichen Repo.
+
 ## Erste Anmeldung
 Kürzel `admin` mit dem Startpasswort, das du separat erhalten hast. Beim ersten Anmelden muss ein eigenes Passwort gesetzt werden; danach ist das Startpasswort wirkungslos.

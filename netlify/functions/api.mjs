@@ -2,6 +2,7 @@
 // Daten liegen in Netlify Blobs (Store "mindmap").
 import { getStore } from "@netlify/blobs";
 import crypto from "node:crypto";
+import zlib from "node:zlib";
 
 // Erstes Admin-Konto. Gilt nur, solange noch kein Benutzer "admin" existiert.
 // Nach der ersten Anmeldung muss das Passwort geändert werden.
@@ -91,6 +92,29 @@ async function listMaps(s, k) {
   }));
   return metas.filter(Boolean).sort((a, b) => b.updated - a.updated);
 }
+// Einmalige Vorlage: Die Umgebungsvariable MINDMAP_SEED (gzip + base64, Format [text, [kinder]] oder "text")
+// wird beim ersten Laden der Mindmaps als Mindmap für SEED_USER (Standard: admin) angelegt.
+// So liegen interne Inhalte nicht im öffentlichen Repo.
+async function applySeed(s, k) {
+  const raw = Netlify.env.get("MINDMAP_SEED");
+  if (!raw) return;
+  const who = (Netlify.env.get("SEED_USER") || "admin").split(",").map(normK);
+  if (!who.includes(k)) return;
+  const hash = crypto.createHash("sha256").update(raw).digest("hex").slice(0, 16);
+  const mark = `seed/${k}/${hash}`;
+  if (await s.get(mark)) return;
+  let data;
+  try { data = JSON.parse(zlib.gunzipSync(Buffer.from(raw, "base64")).toString("utf8")); }
+  catch (e) { console.error("MINDMAP_SEED ungültig", e); return; }
+  const rid = () => crypto.randomBytes(6).toString("hex");
+  const conv = (x) => typeof x === "string" ? { id: rid(), text: x, children: [] } : { id: rid(), text: String(x[0] ?? ""), children: (x[1] || []).map(conv) };
+  const tree = conv(data);
+  tree.cats = [];
+  const id = `vorlage-${hash}`, now = Date.now();
+  await s.setJSON(`maps/${k}/${id}`, { id, tree, created: now, updated: now }, { metadata: { title: tree.text.slice(0, 200), count: countNodes(tree), created: now, updated: now } });
+  await s.set(mark, String(now));
+}
+
 async function adminCount(s) {
   const { blobs } = await s.list({ prefix: "users/" });
   const us = await Promise.all(blobs.map((b) => s.get(b.key, { type: "json" })));
@@ -154,7 +178,7 @@ export default async (req) => {
 
     if (parts[0] === "maps") {
       const id = parts[1];
-      if (!id && m === "GET") return json({ maps: await listMaps(s, k) });
+      if (!id && m === "GET") { await applySeed(s, k); return json({ maps: await listMaps(s, k) }); }
       if (!id || !validId(id) || parts.length > 2) return fail("Unbekannte Mindmap.", 404);
       const key = `maps/${k}/${id}`;
       if (m === "GET") {
