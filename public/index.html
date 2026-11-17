@@ -237,7 +237,7 @@ kbd{font:600 10.5px/1 var(--font);padding:3px 5px;border-radius:5px;border:1px s
 .aip[open]{padding-bottom:14px}
 .aip ol{margin:0 0 10px;padding-left:20px;color:var(--muted);font-size:13px;line-height:1.6}
 .aip pre{white-space:pre-wrap;background:var(--bg);border:1px solid var(--line);border-radius:10px;padding:11px 12px;font:12px/1.55 ui-monospace,SFMono-Regular,Menlo,Consolas,monospace;max-height:230px;overflow:auto;margin:0 0 10px;color:var(--ink)}
-.fmt{display:grid;grid-template-columns:repeat(5,1fr);gap:8px;margin-bottom:12px}
+.fmt{display:grid;grid-template-columns:repeat(3,1fr);gap:8px;margin-bottom:12px}
 @media (max-width:640px){.fmt{grid-template-columns:1fr}.fmt label{flex-direction:row;align-items:baseline;gap:10px}}
 .fmt label{position:relative;border:1.5px solid var(--line);border-radius:12px;padding:11px 12px;cursor:pointer;display:flex;flex-direction:column;gap:2px}
 .fmt label:hover{border-color:color-mix(in oklab,var(--ink) 25%,var(--line))}
@@ -328,6 +328,22 @@ kbd{font:600 10.5px/1 var(--font);padding:3px 5px;border-radius:5px;border:1px s
 .disc h2{margin:0 0 4px}
 .mbox .disc-main{margin:0;color:var(--ink);font-weight:650;font-size:15px;line-height:1.45}
 .lwarn{font-size:12.5px;color:var(--ink)!important;background:color-mix(in oklab,var(--warn) 12%,var(--surface));border:1px solid color-mix(in oklab,var(--warn) 35%,transparent);border-radius:9px;padding:8px 10px}
+.embnote{font-size:13px;color:var(--muted);line-height:1.5;margin:0 0 12px;background:var(--bg);border:1px solid var(--line);border-radius:10px;padding:10px 12px}
+.embnote b{color:var(--ink)}
+.embrow{display:flex;align-items:center;gap:10px;margin-bottom:10px;font-size:13px;font-weight:600}
+.mbox #eCode{height:96px;font-size:12px}
+.embbtns{align-items:center}
+.embbtns .sp{flex:1}
+.seg{display:inline-flex;border:1px solid var(--line);border-radius:8px;overflow:hidden}
+.seg button{height:30px;border:0;background:var(--surface);font-size:12.5px;font-weight:550;padding:0 11px;cursor:pointer}
+.seg button+button{border-left:1px solid var(--line)}
+.seg button[aria-pressed="true"]{background:color-mix(in oklab,var(--accent) 13%,var(--surface));color:var(--accent)}
+body.view .tools,body.view #mapsBtn,body.view #hint,body.view #actions,body.view .node .add{display:none!important}
+body.view .node{cursor:default}
+body.view .node.has{cursor:pointer}
+.viewmsg{position:absolute;inset:0;display:grid;place-items:center;text-align:center;color:var(--muted);font-size:14px;padding:24px}
+.viewmsg b{display:block;color:var(--ink);font-size:16px;margin-bottom:6px}
+.vbrand{margin-left:auto;font-size:12px;color:var(--muted);white-space:nowrap}
 #measure{position:absolute;left:-20000px;top:0;width:4000px;height:10px;visibility:hidden;pointer-events:none}
 #nodes{position:absolute;left:0;top:0;width:4000px}
 
@@ -770,7 +786,8 @@ const undoS=[],redoS=[];
 const snap=()=>JSON.stringify(tree);
 function updUndo(){$('#undoBtn').disabled=!undoS.length;$('#redoBtn').disabled=!redoS.length}
 function commit(before){if(before==null||before===snap())return;undoS.push(before);if(undoS.length>150)undoS.shift();redoS.length=0;updUndo();persist()}
-function mutate(fn,{anchor,undoable=true}={}){const before=snap();fn();reindex();render(anchor);if(undoable)commit(before);else persist();updateActions()}
+const EMBED=new URLSearchParams(location.search).get('embed'),VIEW=!!EMBED;
+function mutate(fn,{anchor,undoable=true}={}){if(VIEW)return;const before=snap();fn();reindex();render(anchor);if(undoable)commit(before);else persist();updateActions()}
 function restore(json){
   tree=cleanTree(JSON.parse(json));reindex();
   if(!byId.has(selectedId))selectedId=tree.id;
@@ -802,7 +819,7 @@ const timeStr=t=>new Date(t).toLocaleTimeString('de-CH',{hour:'2-digit',minute:'
 function setStatus(t,state){const el=$('#status');el.textContent=t;el.dataset.state=state||'ok'}
 function writeDraft(){try{localStorage.setItem(draftKey(),JSON.stringify({id:currentId,tree,at:Date.now()}))}catch{}}
 function clearDraft(){try{localStorage.removeItem(draftKey())}catch{}}
-function persist(){if(!currentId||!session)return;dirty=true;writeDraft();setStatus('Speichert …','busy');clearTimeout(saveT);saveT=setTimeout(storeNow,700)}
+function persist(){if(VIEW||!currentId||!session)return;dirty=true;writeDraft();setStatus('Speichert …','busy');clearTimeout(saveT);saveT=setTimeout(storeNow,700)}
 function upsertMeta(m){mapsMeta=mapsMeta.filter(x=>x.id!==m.id);mapsMeta.unshift(m);mapsMeta.sort((a,b)=>b.updated-a.updated);if(!$('#drawer').hidden)renderList()}
 async function storeNow(){
   clearTimeout(saveT);clearTimeout(retryT);
@@ -828,7 +845,7 @@ function showMap(edit){
   undoS.length=0;redoS.length=0;updUndo();
   selectedId=tree.id;editingId=null;editState=null;
   clearCanvas();reindex();render(null,true);updateActions();
-  if(tree.children.length)fit(1,true,.6);else{const r=vp.getBoundingClientRect();k=1;tx=r.width/2;ty=(r.height-60)/2;applyView()}
+  if(tree.children.length)fit(1,true,VIEW?.15:.6);else{const r=vp.getBoundingClientRect();k=1;tx=r.width/2;ty=(r.height-60)/2;applyView()}
   if(edit)startEdit(tree.id);
 }
 async function openMap(id){
@@ -1112,6 +1129,7 @@ function select(id,{scroll=true}={}){
   if(selectedId&&scroll)ensureVisible(selectedId);
 }
 function addChild(pid,{side}={}){
+  if(VIEW)return;
   if(editingId)finishEdit(true);
   const p=byId.get(pid);if(!p)return;
   const n={id:uid(),text:'',children:[]};if(M(p).depth===0&&side)n.side=side;
@@ -1119,6 +1137,7 @@ function addChild(pid,{side}={}){
   startEdit(n.id,{isNew:true,parentId:pid});
 }
 function addSibling(id){
+  if(VIEW)return;
   if(editingId)finishEdit(true);
   const n=byId.get(id);if(!n)return;const m=M(n);
   if(!m.parent)return addChild(id);
@@ -1127,6 +1146,7 @@ function addSibling(id){
   startEdit(s.id,{isNew:true,parentId:m.parent.id});
 }
 function removeNode(id){
+  if(VIEW)return;
   const n=byId.get(id),m=n&&M(n);if(!m||!m.parent)return;
   const arr=m.parent.children,i=arr.indexOf(n),label=n.text||'Punkt',sub=countDesc(n);
   mutate(()=>{arr.splice(i,1);selectedId=(arr[i]||arr[i-1]||m.parent).id});
@@ -1140,6 +1160,7 @@ function toggleFold(id){
   render(id);updateActions();persist();
 }
 function moveNode(id,targetId,mode,side){
+  if(VIEW)return;
   const n=byId.get(id),t=byId.get(targetId);
   if(!n||!t||n===t||isDesc(t,n)||M(n).depth===0)return;
   if(mode!=='inside'&&M(t).depth===0)mode='inside';
@@ -1155,6 +1176,7 @@ function moveNode(id,targetId,mode,side){
 }
 
 function startEdit(id,{isNew=false,parentId=null,replaceWith=null}={}){
+  if(VIEW)return;
   if(editingId&&editingId!==id)finishEdit(true);
   const n=byId.get(id),en=els.get(id);if(!n||!en)return;
   selectedId=id;editingId=id;editState={id,isNew,parentId,orig:n.text,before:isNew?null:snap()};
@@ -1221,6 +1243,7 @@ layer.addEventListener('click',e=>{
   lastTap={id,t:now};select(id,{scroll:false});
 });
 layer.addEventListener('pointerdown',e=>{
+  if(VIEW)return;
   const el=e.target.closest('.node');if(!el||e.button!==0||el.classList.contains('editing')||e.target.closest('.tog,.add'))return;
   press={id:el.dataset.id,x:e.clientX,y:e.clientY,pid:e.pointerId,tx,ty};
 });
@@ -1362,6 +1385,7 @@ const IC={
 let actSig='';
 const CHIP_MAX=5;
 function updateActions(){
+  if(VIEW){$('#actions').hidden=true;return}
   const bar=$('#actions'),n=selectedId&&byId.get(selectedId);
   if(!n){bar.hidden=true;actSig='';return}
   if(dupMode)$('#dupList').querySelectorAll('.dgo').forEach(b=>b.classList.toggle('cur',b.dataset.id===selectedId));
@@ -1652,7 +1676,7 @@ async function makePdf(cv){
   add(`xref\n0 6\n0000000000 65535 f \n${[1,2,3,4,5].map(i=>String(off[i]).padStart(10,'0')+' 00000 n \n').join('')}trailer\n<< /Size 6 /Root 1 0 R >>\nstartxref\n${xref}\n%%EOF\n`);
   return new Blob(parts,{type:'application/pdf'});
 }
-const FORMATS=[['pdf','PDF','Zum Drucken und Teilen'],['png','PNG','Bild in bester Qualität'],['jpg','JPG','Kleinere Bilddatei'],['txt','Text','Eingerückte Liste'],['json','JSON','Zum späteren Import']];
+const FORMATS=[['pdf','PDF','Zum Drucken und Teilen'],['png','PNG','Bild in bester Qualität'],['jpg','JPG','Kleinere Bilddatei'],['txt','Text','Eingerückte Liste'],['json','JSON','Zum späteren Import'],['embed','iFrame','Zum Einbetten, z. B. in Confluence']];
 async function exportAs(fmt,opt){
   if(editingId)finishEdit(true);
   const name=slug(tree.text);
@@ -1666,6 +1690,35 @@ async function exportAs(fmt,opt){
   if(!blob){toast('Die Mindmap ist zu gross für ein Bild. Klappe ein paar Äste ein und versuche es nochmal.');return}
   download(`${name}.${fmt}`,blob);toast(`${fmt.toUpperCase()} gespeichert`);
 }
+function copyText(text,ok){
+  (navigator.clipboard?.writeText?navigator.clipboard.writeText(text):Promise.reject()).then(()=>toast(ok)).catch(()=>toast('Kopieren nicht möglich. Bitte den Text markieren und mit Ctrl+C kopieren.'));
+}
+function embedCode(token,h){
+  const url=`${location.origin}/?embed=${token}`,title=String(tree.text||'Mindmap').replace(/[&<>"]/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;'}[c]));
+  return {url,code:`<iframe src="${url}" title="Mindmap: ${title}" width="100%" height="${h}" style="border:1px solid #dde3e8;border-radius:8px" loading="lazy"></iframe>`};
+}
+function renderEmbed(box,token){
+  const pane=box.querySelector('#eEmbed');
+  if(!token){pane.innerHTML=`<p class="embnote">Erstellt einen geheimen Link zu einer <b>Nur-Lese-Ansicht</b> dieser Mindmap und den passenden HTML-Code zum Einbetten. Wer den Link oder Code hat, kann die Mindmap ansehen, aber nicht bearbeiten. Keine sensiblen Daten freigeben.</p>`;return}
+  let h=600;try{h=+localStorage.getItem('mindmap:embedH')||600}catch{}
+  pane.innerHTML=`<p class="embnote">Diese Mindmap ist freigegeben. Wer den Link oder Code hat, kann sie ansehen, aber nicht bearbeiten. Deine Änderungen erscheinen dort automatisch.</p>
+    <div class="embrow"><span>Höhe</span><div class="seg" role="radiogroup" aria-label="Höhe">${[400,600,800].map(v=>`<button type="button" data-h="${v}" aria-pressed="${v===h}">${v} px</button>`).join('')}</div></div>
+    <textarea readonly id="eCode" spellcheck="false" aria-label="HTML-Code zum Einbetten"></textarea>
+    <div class="mbtns embbtns"><button class="btn danger" id="eRevoke">Freigabe beenden</button><span class="sp"></span><button class="btn" id="eLink">Link kopieren</button><button class="btn primary" id="eCodeCopy">Code kopieren</button></div>`;
+  const ta=pane.querySelector('#eCode');
+  const set=()=>{const {code}=embedCode(token,h);ta.value=code};set();
+  ta.onfocus=()=>ta.select();
+  pane.querySelectorAll('.seg button').forEach(b=>b.onclick=()=>{h=+b.dataset.h;try{localStorage.setItem('mindmap:embedH',h)}catch{}pane.querySelectorAll('.seg button').forEach(x=>x.setAttribute('aria-pressed',String(x===b)));set()});
+  pane.querySelector('#eCodeCopy').onclick=()=>copyText(ta.value,'Code kopiert');
+  pane.querySelector('#eLink').onclick=()=>copyText(embedCode(token,h).url,'Link kopiert');
+  const rv=pane.querySelector('#eRevoke');
+  rv.onclick=async()=>{
+    if(!rv.classList.contains('armed')){rv.classList.add('armed');rv.textContent='Wirklich beenden?';setTimeout(()=>{if(rv.isConnected){rv.classList.remove('armed');rv.textContent='Freigabe beenden'}},4000);return}
+    try{await api('/maps/'+encodeURIComponent(currentId)+'/share',{method:'DELETE'});const mm=mapsMeta.find(x=>x.id===currentId);if(mm)mm.share=null;
+      toast('Freigabe beendet. Eingebettete Ansichten zeigen die Mindmap nicht mehr.');box.querySelector('#eBtns').hidden=false;renderEmbed(box,null)}
+    catch(x){if(x.status!==401)toast(x.message)}
+  };
+}
 function showExport(){
   let last='pdf';try{last=localStorage.getItem('mindmap:exportFmt')||'pdf'}catch{}
   const folded=[...byId.values()].some(n=>n.collapsed&&n.children.length);
@@ -1675,13 +1728,28 @@ function showExport(){
       ${folded?'<label class="chk"><input type="checkbox" id="eAll" checked>Eingeklappte Äste mitnehmen</label>':''}
       <label class="chk"><input type="checkbox" id="eLight" checked>Heller Hintergrund (auch im Dunkelmodus)</label>
     </div>
-    <div class="mbtns"><button class="btn" id="eCopy" hidden>Text kopieren</button><button class="btn" data-close>Abbrechen</button><button class="btn primary" id="eGo">Herunterladen</button></div>`,box=>{
+    <div id="eEmbed" hidden></div>
+    <div class="mbtns" id="eBtns"><button class="btn" id="eCopy" hidden>Text kopieren</button><button class="btn" data-close>Abbrechen</button><button class="btn primary" id="eGo">Herunterladen</button></div>`,box=>{
     const sel=()=>box.querySelector('input[name=efmt]:checked').value;
-    const upd=()=>{const f=sel(),img=['pdf','png','jpg'].includes(f);box.querySelector('#eOpts').hidden=!img;box.querySelector('#eCopy').hidden=f!=='txt'};
+    const shareOf=()=>mapsMeta.find(x=>x.id===currentId)?.share||null;
+    const upd=()=>{const f=sel(),img=['pdf','png','jpg'].includes(f),emb=f==='embed';
+      box.querySelector('#eOpts').hidden=!img;box.querySelector('#eCopy').hidden=f!=='txt';
+      const go=box.querySelector('#eGo'),pane=box.querySelector('#eEmbed');
+      pane.hidden=!emb;go.textContent=emb?'Einbettungscode erstellen':'Herunterladen';
+      if(emb){const t=shareOf();box.querySelector('#eBtns').hidden=!!t;renderEmbed(box,t)}else box.querySelector('#eBtns').hidden=false};
     box.querySelectorAll('input[name=efmt]').forEach(r=>r.onchange=upd);upd();
     box.querySelector('#eCopy').onclick=()=>{const text=outline();(navigator.clipboard?.writeText?navigator.clipboard.writeText(text):Promise.reject()).then(()=>{closeModal();toast('Text in die Zwischenablage kopiert')}).catch(()=>toast('Kopieren nicht möglich. Lade die Text-Datei herunter.'))};
     box.querySelector('#eGo').onclick=async()=>{
       const f=sel();try{localStorage.setItem('mindmap:exportFmt',f)}catch{}
+      if(f==='embed'){
+        const go=box.querySelector('#eGo');go.disabled=true;
+        try{if(editingId)finishEdit(true);if(dirty)await storeNow();
+          const d=await api('/maps/'+encodeURIComponent(currentId)+'/share',{method:'POST'});
+          const mm=mapsMeta.find(x=>x.id===currentId);if(mm)mm.share=d.token;else mapsMeta.unshift({id:currentId,title:tree.text,count:countDesc(tree),updated:Date.now(),share:d.token});
+          upd();}
+        catch(x){if(x.status!==401)toast(x.message)}
+        go.disabled=false;return;
+      }
       const opt={all:box.querySelector('#eAll')?.checked!==false,light:box.querySelector('#eLight').checked};
       closeModal();await exportAs(f,opt);
     };
@@ -1711,7 +1779,30 @@ $('#hintHelp').onclick=showHelp;
 let rT=0;addEventListener('resize',()=>{clearTimeout(rT);rT=setTimeout(()=>{if(tree.children.length)ensureVisible(selectedId||tree.id);else fit(1,true)},150)});
 
 vp.style.visibility='hidden';
-tree=blank();reindex();boot();
+tree=blank();reindex();
+if(VIEW)bootView();else boot();
+async function loadShared(first){
+  const r=await fetch(API+'/share/'+encodeURIComponent(EMBED),{cache:'no-store'});
+  const j=await r.json().catch(()=>null);
+  if(!r.ok)throw new Error(j?.error||'Diese Mindmap ist nicht verfügbar.');
+  const local=first?null:new Map([...byId.values()].map(n=>[n.id,!!n.collapsed]));
+  tree=cleanTree(j.tree);
+  if(local){(function w(n){if(local.has(n.id)){if(local.get(n.id))n.collapsed=true;else delete n.collapsed}n.children.forEach(w)})(tree)}
+  if(first)showMap(false);else{reindex();render(null,true)}
+  selectedId=null;repaint();
+  setStatus('Nur ansehen · Stand '+new Date(j.updated||Date.now()).toLocaleString('de-CH',{day:'2-digit',month:'2-digit',year:'numeric',hour:'2-digit',minute:'2-digit'}));
+}
+async function bootView(){
+  document.body.classList.add('view');$('#login').hidden=true;
+  $('header').insertAdjacentHTML('beforeend','<span class="vbrand">Mindmap · nur ansehen</span>');
+  try{await loadShared(true);vp.style.visibility='';booted=true}
+  catch(e){vp.style.visibility='';$('#docTitle').textContent='Mindmap';setStatus('Nicht verfügbar','warn');
+    const m=document.createElement('div');m.className='viewmsg';m.innerHTML='<div><b></b><span>Bitte die Person fragen, die sie geteilt hat.</span></div>';m.querySelector('b').textContent=e.message;$('main').appendChild(m);return}
+  let last=Date.now();
+  const refresh=()=>{if(Date.now()-last<20000)return;last=Date.now();loadShared(false).catch(()=>{})};
+  document.addEventListener('visibilitychange',()=>{if(!document.hidden)refresh()});
+  setInterval(()=>{if(!document.hidden){last=0;refresh()}},120000);
+}
 if(document.fonts)document.fonts.ready.then(()=>{mcache.clear();render(null,true)});
 </script>
 </body>

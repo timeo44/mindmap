@@ -88,7 +88,7 @@ async function listMaps(s, k) {
   const metas = await Promise.all(blobs.map(async (b) => {
     const m = await s.getMetadata(b.key);
     const id = b.key.slice(`maps/${k}/`.length);
-    return m ? { id, title: m.metadata?.title || "", count: m.metadata?.count || 0, updated: m.metadata?.updated || 0, created: m.metadata?.created || 0 } : null;
+    return m ? { id, title: m.metadata?.title || "", count: m.metadata?.count || 0, updated: m.metadata?.updated || 0, created: m.metadata?.created || 0, share: m.metadata?.share || null } : null;
   }));
   return metas.filter(Boolean).sort((a, b) => b.updated - a.updated);
 }
@@ -157,6 +157,21 @@ export default async (req) => {
   try {
     if (parts[0] === "login" && m === "POST") return await login(req, s);
 
+    // Öffentliche Nur-Lese-Ansicht für eingebettete Mindmaps (iFrame)
+    if (parts[0] === "share" && parts[1] && parts.length === 2 && m === "GET") {
+      const t = parts[1];
+      const gone = () => fail("Diese Mindmap ist nicht (mehr) freigegeben.", 404);
+      if (!/^[A-Za-z0-9_-]{16,48}$/.test(t)) return gone();
+      const sh = await s.get(`shares/${t}`, { type: "json" });
+      if (!sh) return gone();
+      const key = `maps/${sh.k}/${sh.id}`;
+      const meta = await s.getMetadata(key);
+      if (!meta || meta.metadata?.share !== t) return gone();
+      const doc = await s.get(key, { type: "json" });
+      if (!doc) return gone();
+      return json({ tree: doc.tree, updated: doc.updated });
+    }
+
     const u = await currentUser(req, s);
     if (!u) return fail("Nicht angemeldet.", 401);
     const k = u.kuerzel;
@@ -179,6 +194,27 @@ export default async (req) => {
     if (parts[0] === "maps") {
       const id = parts[1];
       if (!id && m === "GET") { await applySeed(s, k); return json({ maps: await listMaps(s, k) }); }
+      if (id && validId(id) && parts[2] === "share" && parts.length === 3) {
+        const key = `maps/${k}/${id}`;
+        const meta = await s.getMetadata(key);
+        if (!meta) return fail("Diese Mindmap gibt es nicht mehr.", 404);
+        const md = meta.metadata || {};
+        if (m === "POST") {
+          if (md.share && (await s.get(`shares/${md.share}`))) return json({ token: md.share });
+          const token = crypto.randomBytes(18).toString("base64url");
+          await s.setJSON(`shares/${token}`, { k, id, created: Date.now() });
+          const doc = await s.get(key, { type: "json" });
+          await s.setJSON(key, doc, { metadata: { ...md, share: token } });
+          return json({ token });
+        }
+        if (m === "DELETE") {
+          if (md.share) await s.delete(`shares/${md.share}`);
+          const doc = await s.get(key, { type: "json" });
+          const { share, ...rest } = md;
+          await s.setJSON(key, doc, { metadata: rest });
+          return json({ ok: true });
+        }
+      }
       if (!id || !validId(id) || parts.length > 2) return fail("Unbekannte Mindmap.", 404);
       const key = `maps/${k}/${id}`;
       if (m === "GET") {
@@ -195,10 +231,17 @@ export default async (req) => {
         const now = Date.now();
         const created = old?.metadata?.created || now;
         const title = String(tree.text || "").slice(0, 200);
-        await s.setJSON(key, { id, tree, created, updated: now }, { metadata: { title, count: countNodes(tree), created, updated: now } });
+        const md = { title, count: countNodes(tree), created, updated: now };
+        if (old?.metadata?.share) md.share = old.metadata.share;
+        await s.setJSON(key, { id, tree, created, updated: now }, { metadata: md });
         return json({ id, updated: now });
       }
-      if (m === "DELETE") { await s.delete(key); return json({ ok: true }); }
+      if (m === "DELETE") {
+        const old = await s.getMetadata(key);
+        if (old?.metadata?.share) await s.delete(`shares/${old.metadata.share}`);
+        await s.delete(key);
+        return json({ ok: true });
+      }
     }
 
     if (parts[0] === "admin" && parts[1] === "users") {
